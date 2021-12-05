@@ -1,0 +1,26 @@
+{
+    "tasks": [
+        {
+            "id": 1,
+            "title": "json-server",
+            "author": "typicode"
+        }
+    ],
+    "comments": [
+        {
+            "id": 1,
+            "body": "some comment",
+            "postId": 1
+        }
+    ],
+    "users": [
+        {
+            "id": "1",
+            "name": "ivan",
+            "last_name": "ivanovic",
+            "username": "iivanovic",
+            "email": "iivanovic@mail.com",
+            "password": "test1234"
+        }
+    ]
+}

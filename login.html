@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="css/login.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container">
+        <!-- it will become a model-->
+        <div class="container-msg-modal">
+            <div class="container-modal-content--success container-modal-content">
+                <span>Welcome!</span>
+            </div> <!-- redirect fn does not esist-->
+            <div class="container-modal-content--error container-modal-content"><span>Failed Login</span></div>
+        </div>
+
+        <!-- -->
+        <form action="" id="form">
+            <div class="container-form-userName container-form-input">
+                <label for="userName">User name</label>
+                <input type="text" placeholder="User Name" name="userName" required>
+            </div>
+            <div class="container-form-userPassword container-form-input">
+                <label for="userPasswrod">Password</label>
+                <input type="password" placeholder="User Password" name="userPassword" onfocus="this.value=''" required>
+            </div>
+            <button type="submit" class="js-form-btn">Submit</button>
+        </form>
+    </div>
+    <script src="js/login.js"></script>
+</body>
+
+</html>
