@@ -110,7 +110,7 @@
 
         const db = getDatabase();
 
-        registerBtn.addEventListener('click', saveData);
+        registerBtn.addEventListener('click', registerUser);
 
         function registerUser() {
             const dbref = ref(db);
@@ -145,6 +145,7 @@
                 password: inputPassword.value,
             }).then(() => {
                 alert('Registered successfully')
+
             }).catch((err) => {
                 console.log(err)
                 alert('error: ' + err)
