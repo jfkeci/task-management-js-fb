@@ -1,7 +1,6 @@
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-analytics.js";
 
-//inicijalizacija baze podataka(firebase-a)
 const firebaseConfig = {
     apiKey: "AIzaSyByKK5JwSGDlwlgVwJfqy6qffZ_lzE7MEA",
     authDomain: "task-management-452a7.firebaseapp.com",
@@ -12,12 +11,10 @@ const firebaseConfig = {
     appId: "1:886659271691:web:3d6eed9ee2aa2944fe0b0e",
     measurementId: "${config.measurementId}"
 };
-// Initialize Firebase
+
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 
-//kreiranje objekta firebase baze
-app_fireBase = app;
-var oDb = firebase.database();
+import { getDatabase, get, ref, set, child, update, remove } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-database.js"
 
-var oDbUsers = oDb.ref('users');
+const db = getDatabase();

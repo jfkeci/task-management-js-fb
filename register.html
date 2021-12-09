@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Task management</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Tasker</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="index.html">Home </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="about.html">About</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="register.html">Register</a>
+                    </li>
+                </ul>
+            </form>
+        </div>
+    </nav>
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <p class="lead">Become a new user</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+        </div>
+        <div class="col-8">
+            <div class="container">
+                <form>
+                    <div class="form-group">
+                        <label for="inputUsername">Username</label>
+                        <input type="text" class="form-control" id="inputUsername" placeholder="Username">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail">Email address</label>
+                        <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp"
+                            placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword">Password</label>
+                        <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+                    </div>
+                </form>
+                <button id="registerBtn" class="btn btn-success">Register</button>
+            </div>
+        </div>
+        <div class="col">
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script type="module">
+
+        let inputUsername = document.getElementById("inputUsername")
+        let inputEmail = document.getElementById("inputEmail")
+        let inputPassword = document.getElementById("inputPassword")
+
+        let registerBtn = document.getElementById("registerBtn")
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-analytics.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyByKK5JwSGDlwlgVwJfqy6qffZ_lzE7MEA",
+            authDomain: "task-management-452a7.firebaseapp.com",
+            databaseURL: "https://task-management-452a7-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "task-management-452a7",
+            storageBucket: "task-management-452a7.appspot.com",
+            messagingSenderId: "886659271691",
+            appId: "1:886659271691:web:3d6eed9ee2aa2944fe0b0e",
+            measurementId: "${config.measurementId}"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+
+        import { getDatabase, get, ref, set, child, update, remove } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-database.js"
+
+        const db = getDatabase();
+
+        registerBtn.addEventListener('click', saveData);
+
+        function registerUser() {
+            const dbref = ref(db);
+            get(child(dbref, "users/"))
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        let users = []
+                        let canRegister = true
+                        snapshot.forEach(item => {
+                            if (item.val().username == inputUsername.value || item.val().email == inputEmail.value) {
+                                canRegister = false
+                            }
+                        });
+                        if (canRegister) {
+                            console.log('canRegister')
+                            registerUser()
+                        } else {
+                            alert('User already exists in the database')
+                        }
+                    } else {
+                        registerUser()
+                    }
+                }).catch((err) => {
+                    alert('error: ', err)
+                })
+        }
+
+        function saveData() {
+            set(ref(db, "users/" + inputUsername.value), {
+                username: inputUsername.value,
+                email: inputEmail.value,
+                password: inputPassword.value,
+            }).then(() => {
+                alert('Registered successfully')
+            }).catch((err) => {
+                console.log(err)
+                alert('error: ' + err)
+            })
+        }
+
+
+    </script>
+</body>
+
+</html>

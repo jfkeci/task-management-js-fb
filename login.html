@@ -22,34 +22,19 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="index.html">Home </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Dropdown
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="/about.html">About</a>
+                    <a class="nav-link disabled" href="about.html">About</a>
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/login.html">Login</a>
+                        <a class="nav-link" href="login.html">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/register.html">Register</a>
+                        <a class="nav-link" href="register.html">Register</a>
                     </li>
                 </ul>
             </form>
@@ -57,19 +42,28 @@
     </nav>
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
-            <h1 class="display-4">Page title</h1>
-            <p class="lead">Page description</p>
+            <p class="lead">Login</p>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            Left
         </div>
         <div class="col-8">
-            Main
+            <div class="container">
+                <form>
+                    <div class="form-group">
+                        <label for="inputUsername">Username</label>
+                        <input type="text" class="form-control" id="inputUsername" placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword">Password</label>
+                        <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+                    </div>
+                </form>
+                <button id="loginBtn" class="btn btn-success">Login</button>
+            </div>
         </div>
         <div class="col">
-            Right
         </div>
     </div>
 
@@ -82,6 +76,53 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+    <script type="module">
+
+        let inputUsername = document.getElementById("inputUsername")
+        let inputPassword = document.getElementById("inputPassword")
+
+        let loginBtn = document.getElementById("loginBtn")
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-analytics.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyByKK5JwSGDlwlgVwJfqy6qffZ_lzE7MEA",
+            authDomain: "task-management-452a7.firebaseapp.com",
+            databaseURL: "https://task-management-452a7-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "task-management-452a7",
+            storageBucket: "task-management-452a7.appspot.com",
+            messagingSenderId: "886659271691",
+            appId: "1:886659271691:web:3d6eed9ee2aa2944fe0b0e",
+            measurementId: "${config.measurementId}"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+
+        import { getDatabase, get, ref, set, child, update, remove } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-database.js"
+
+        const db = getDatabase();
+
+        function loginUser() {
+            const dbref = ref(db);
+            get(child(dbref, "users/" + inputUsername.value))
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        if (snapshot.val().username == inputUsername.value && snapshot.val().password == inputPassword.value) {
+                            alert('Login Successfull')
+                        }
+                    } else {
+                        alert('Unsuccessfull login')
+                    }
+                }).catch((err) => {
+                    alert('error: ', err)
+                })
+        }
+
+        loginBtn.addEventListener('click', loginUser);
+
+    </script>
 </body>
 
 </html>
