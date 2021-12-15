@@ -38,7 +38,6 @@ function getByUsername() {
 }
 
 function get() {
-
     var user_ref = database.ref('users/')
     user_ref.on('value', function (snapshot) {
         var data = snapshot.val()
