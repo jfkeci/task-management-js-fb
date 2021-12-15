@@ -22,22 +22,10 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="index.html">Home </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Dropdown
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
+                    <a class="nav-link disabled" href="tasks.html">Tasks</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link disabled" href="about.html">About</a>
@@ -57,29 +45,21 @@
     </nav>
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
-            <h1 class="display-4">Page title</h1>
             <p class="lead">Page description</p>
         </div>
     </div>
     <div class="row">
         <div class="col">
+
+            <button type="button" class="btn btn-primary" data-toggle="modal" onclick="get()">
+                Get
+            </button>
         </div>
         <div class="col-8">
-            <br> <br>
-            <label for="inputUsername">Username</label> <input type="text" id="inputUsername">
-            <br> <br>
-            <label for="inputEmail">Email</label> <input type="email" id="inputEmail">
-            <br> <br>
-            <label for="inputPassword">Password</label> <input type="password" id="inputPassword">
-
-            <br><br>
-            <button class="btn btn-success m-2" id="insertBtn">Insert</button>
-            <button class="btn btn-success m-2" id="selectBtn">Select</button>
-            <button class="btn btn-success m-2" id="updateBtn">Update</button>
-            <button class="btn btn-success m-2" id="deleteBtn">Delete</button>
-            <button class="btn btn-success m-2" id="getBtn">Get</button>
+            About....
         </div>
         <div class="col">
+
         </div>
     </div>
 
@@ -92,116 +72,11 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
-    <script type="module">
+    <script src="https://www.gstatic.com/firebasejs/8.1.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.1.0/firebase-database.js"></script>
+    <script src="assets/js/firebase-config.js"></script>
+    <script src="assets/js/index.js"></script>
 
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-analytics.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyByKK5JwSGDlwlgVwJfqy6qffZ_lzE7MEA",
-            authDomain: "task-management-452a7.firebaseapp.com",
-            databaseURL: "https://task-management-452a7-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "task-management-452a7",
-            storageBucket: "task-management-452a7.appspot.com",
-            messagingSenderId: "886659271691",
-            appId: "1:886659271691:web:3d6eed9ee2aa2944fe0b0e",
-            measurementId: "${config.measurementId}"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-
-        import { getDatabase, get, ref, set, child, update, remove } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-database.js"
-
-        const db = getDatabase();
-
-        let inputUsername = document.getElementById("inputUsername")
-        let inputEmail = document.getElementById("inputEmail")
-        let inputPassword = document.getElementById("inputPassword")
-
-        let insertBtn = document.getElementById("insertBtn")
-        let selectBtn = document.getElementById("selectBtn")
-        let updateBtn = document.getElementById("updateBtn")
-        let deleteBtn = document.getElementById("deleteBtn")
-        let getBtn = document.getElementById("getBtn")
-
-
-        function insertData() {
-            set(ref(db, "users/" + inputUsername.value), {
-                username: inputUsername.value,
-                email: inputEmail.value,
-                password: inputPassword.value,
-            }).then(() => {
-                alert('data stored successfully')
-            }).catch((err) => {
-                console.log(err)
-                alert('error: ' + err)
-            })
-        }
-
-        function selectData() {
-            const dbref = ref(db);
-            get(child(dbref, "users/" + inputUsername.value))
-                .then((snapshot) => {
-                    if (snapshot.exists()) {
-                        inputUsername.value = snapshot.val().username
-                        inputEmail.value = snapshot.val().email
-                        inputPassword.value = snapshot.val().password
-                    } else {
-                        alert('no data found')
-                    }
-                }).catch((err) => {
-                    alert('error: ', err)
-                })
-        }
-
-        function updateData() {
-            update(ref(db, "users/" + inputUsername.value), {
-                username: inputUsername.value,
-                email: inputEmail.value,
-                password: inputPassword.value,
-            }).then(() => {
-                alert('data updated successfully')
-            }).catch((err) => {
-                console.log(err)
-                alert('error: ' + err)
-            })
-        }
-
-        function deleteData() {
-            remove(ref(db, "users/" + inputUsername.value))
-                .then((res) => {
-                    console.log(res)
-                    alert('data deleted successfully')
-                }).catch((err) => {
-                    console.log(err)
-                    alert('error: ' + err)
-                })
-        }
-
-        function getData() {
-            const dbref = ref(db);
-            get(child(dbref, "users/"))
-                .then((snapshot) => {
-                    if (snapshot.exists()) {
-                        alert(JSON.stringify(snapshot))
-                    } else {
-                        alert('no data found')
-                    }
-                }).catch((err) => {
-                    alert('error: ', err)
-                })
-        }
-
-        insertBtn.addEventListener('click', insertData);
-        selectBtn.addEventListener('click', selectData);
-        updateBtn.addEventListener('click', updateData);
-        deleteBtn.addEventListener('click', deleteData);
-        getBtn.addEventListener('click', getData);
-
-
-
-    </script>
 </body>
 
 </html>

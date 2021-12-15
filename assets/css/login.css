@@ -1,0 +1,30 @@
+.naslov {
+    color: white;
+    text-align: center;
+    margin-right: 10px;
+}
+
+input {
+    display: block;
+    position: center;
+    padding: 10px;
+    margin: 15px;
+    border-radius: 3px;
+}
+
+body {
+    background: url('../img/pozadina.jpg');
+}
+
+#logindiv {
+    margin: 0px auto;
+    margin-top: 150px;
+    width: 18%;
+    padding: 20px;
+}
+
+#Login {
+    width: 120px;
+    padding: 10px;
+    margin-left: 55px;
+}

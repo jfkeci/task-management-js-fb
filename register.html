@@ -42,31 +42,28 @@
     </nav>
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
-            <p class="lead">Become a new user</p>
+            <p class="lead">Register</p>
         </div>
     </div>
     <div class="row">
         <div class="col">
         </div>
         <div class="col-8">
-            <div class="container">
-                <form>
-                    <div class="form-group">
-                        <label for="inputUsername">Username</label>
-                        <input type="text" class="form-control" id="inputUsername" placeholder="Username">
-                    </div>
-                    <div class="form-group">
-                        <label for="inputEmail">Email address</label>
-                        <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp"
-                            placeholder="Enter email">
-                    </div>
-                    <div class="form-group">
-                        <label for="inputPassword">Password</label>
-                        <input type="password" class="form-control" id="inputPassword" placeholder="Password">
-                    </div>
-                </form>
-                <button id="registerBtn" class="btn btn-success">Register</button>
-            </div>
+            <form>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="inputUsername" placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="inputName" placeholder="Enter name">
+                </div>
+                <div class="form-group">
+                    <input type="email" class="form-control" id="inputEmail" placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+                </div>
+            </form>
+            <button id="registerBtn" class="btn btn-primary">Register</button>
         </div>
         <div class="col">
         </div>
@@ -81,79 +78,12 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
-    <script type="module">
-
-        let inputUsername = document.getElementById("inputUsername")
-        let inputEmail = document.getElementById("inputEmail")
-        let inputPassword = document.getElementById("inputPassword")
-
-        let registerBtn = document.getElementById("registerBtn")
-
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-analytics.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyByKK5JwSGDlwlgVwJfqy6qffZ_lzE7MEA",
-            authDomain: "task-management-452a7.firebaseapp.com",
-            databaseURL: "https://task-management-452a7-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "task-management-452a7",
-            storageBucket: "task-management-452a7.appspot.com",
-            messagingSenderId: "886659271691",
-            appId: "1:886659271691:web:3d6eed9ee2aa2944fe0b0e",
-            measurementId: "${config.measurementId}"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-
-        import { getDatabase, get, ref, set, child, update, remove } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-database.js"
-
-        const db = getDatabase();
-
-        registerBtn.addEventListener('click', registerUser);
-
-        function registerUser() {
-            const dbref = ref(db);
-            get(child(dbref, "users/"))
-                .then((snapshot) => {
-                    if (snapshot.exists()) {
-                        let users = []
-                        let canRegister = true
-                        snapshot.forEach(item => {
-                            if (item.val().username == inputUsername.value || item.val().email == inputEmail.value) {
-                                canRegister = false
-                            }
-                        });
-                        if (canRegister) {
-                            console.log('canRegister')
-                            registerUser()
-                        } else {
-                            alert('User already exists in the database')
-                        }
-                    } else {
-                        registerUser()
-                    }
-                }).catch((err) => {
-                    alert('error: ', err)
-                })
-        }
-
-        function saveData() {
-            set(ref(db, "users/" + inputUsername.value), {
-                username: inputUsername.value,
-                email: inputEmail.value,
-                password: inputPassword.value,
-            }).then(() => {
-                alert('Registered successfully')
-
-            }).catch((err) => {
-                console.log(err)
-                alert('error: ' + err)
-            })
-        }
+    <script src="https://www.gstatic.com/firebasejs/8.1.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.1.0/firebase-database.js"></script>
+    <script src="assets/js/firebase-config.js"></script>
+    <script type="module" src="assets/js/register.js"></script>
 
 
-    </script>
 </body>
 
 </html>
