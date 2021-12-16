@@ -16,8 +16,8 @@ function addTask() {
     } else {
         let newId = makeId();
 
-        var user_ref = database.ref('tasks/')
-        user_ref.on('value', function (snapshot) {
+        var task_ref = database.ref('tasks/')
+        task_ref.on('value', function (snapshot) {
             if (snapshot.exists()) {
                 var data = snapshot.val()
                 let tasks = JSON.stringify(data);
@@ -53,15 +53,11 @@ function deleteTask(row) {
     getTasks();
 }
 
-function testIt(test) {
-    console.log()
-}
-
 function getTasks() {
     let tasks = []
     let html = ''
-    var user_ref = database.ref('tasks/')
-    user_ref.on('value', function (snapshot) {
+    var task_ref = database.ref('tasks/')
+    task_ref.on('value', function (snapshot) {
         if (snapshot.exists()) {
             var data = snapshot.val()
             tasks = Object.entries(data).map((e) => e[1])

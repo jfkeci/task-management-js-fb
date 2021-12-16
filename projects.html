@@ -51,15 +51,59 @@
             <p class="lead">Page description</p>
         </div>
     </div>
-    <div class="row">
-        <div class="col">
-
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                    Add a project
+                </button>
+            </div>
+            <div class="col-10">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Project</th>
+                            <th scope="col">Created at</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="projectTable">
+                    </tbody>
+            </div>
         </div>
-        <div class="col-8">
-            Main
-        </div>
-        <div class="col">
+    </div>
 
+    <div id="modals">
+        <!-- Add task modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Add a project</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="inputProjectTitle">Title</label>
+                                <input type="text" id="inputProjectTitle" class="form-control"
+                                    placeholder="Project title">
+                                <label for="inputProjectDescription">Descrition</label>
+                                <textarea class="form-control" id="inputProjectDescription"
+                                    placeholder="What are you going to do?" rows="3"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" id="createProjectBtn" class="btn btn-primary">Save Project</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -74,7 +118,8 @@
         crossorigin="anonymous"></script>
     <script src="https://www.gstatic.com/firebasejs/8.1.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.1.0/firebase-database.js"></script>
-    <script type="module" src="assets/js/firebase-config.js"></script>
+    <script src="assets/js/firebase-config.js"></script>
+    <script src="assets/js/projects.js"></script>
 
 </body>
 
