@@ -5,7 +5,7 @@ let tasksTable = document.getElementById('taskTable')
 createTaskBtn.addEventListener('click', addTask);
 
 
-getTasks()
+getTasks();
 
 
 function addTask() {
@@ -44,15 +44,20 @@ function saveTask(id) {
     getTasks()
 }
 
-function deleteTask(id) {
+function deleteTask(row) {
+    let id = $(row).data("task-id")
     console.log(id)
     database.ref('tasks/' + id).remove()
 
     alert('deleted')
+    getTasks();
+}
+
+function testIt(test) {
+    console.log()
 }
 
 function getTasks() {
-    tasksTable.innerHTML = ''
     let tasks = []
     let html = ''
     var user_ref = database.ref('tasks/')
@@ -61,13 +66,14 @@ function getTasks() {
             var data = snapshot.val()
             tasks = Object.entries(data).map((e) => e[1])
             let counter = 1;
+            tasksTable.innerHTML = ''
             tasks.forEach(task => {
                 console.log(task.id)
                 html += '<tr>' +
                     '<th scope="row">' + counter + '</th>' +
                     '<td>' + task.task + '</td>' +
                     '<td>' + task.createdAt + '</td>' +
-                    '<td><button type="button" class="btn btn-danger" onclick="deleteTask(\"' + task.id + '\")">Delete</button></td > ' +
+                    '<td><button type="button" class="btn btn-danger" onclick="deleteTask(this)" data-task-id="' + task.id + '">Delete</button></td > ' +
                     '</tr>'
                 counter++
             })
