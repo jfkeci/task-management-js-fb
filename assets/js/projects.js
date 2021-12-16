@@ -12,7 +12,6 @@ getProjects();
 
 function addProject() {
     let projectTitle = inputTitle.value;
-    let projectDescription = inputDescription.value;
 
     if (projectTitle.length < 3) {
         alert('Write something for the title');
@@ -51,7 +50,6 @@ function saveProject(id) {
 
 function deleteProject(row) {
     let id = $(row).data("project-id")
-    console.log(id)
     database.ref('projects/' + id).remove()
 
     alert('deleted')
@@ -69,7 +67,6 @@ function getProjects() {
             let counter = 1;
             projectTable.innerHTML = ''
             projects.forEach(project => {
-                console.log(project.id)
                 html += '<tr>' +
                     '<th scope="row">' + counter + '</th>' +
                     '<td>' + project.title + '</td>' +
