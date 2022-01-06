@@ -51,60 +51,23 @@
             <p class="lead">Page description</p>
         </div>
     </div>
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                    Add a task
-                </button>
-            </div>
-            <div class="col-10">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Task</th>
-                            <th scope="col">Created at</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="taskTable">
-                    </tbody>
-            </div>
+    <div class="row">
+        <div class="col">
+        </div>
+        <div class="col-8">
+            <h2>About this app.....</h2>
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
+                ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+                fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+                deserunt mollit anim id est laborum.
+            </p>
+        </div>
+        <div class="col">
         </div>
     </div>
 
-    <div id="modals">
-        <!-- Add task modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Add a task</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="form-group">
-                                <label>Task content</label>
-                                <input type="text" id="inputTask" class="form-control" placeholder="What is your task?">
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" id="createTaskBtn" class="btn btn-primary">Save Task</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <br><br>
     <footer class="bg-dark text-center text-white">
         <div class="container p-4">
             <section class="mb-4">
@@ -129,8 +92,7 @@
 
             <section class="">
                 <div class="row">
-
-                    <div class="col">
+                    <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
                         <h5 class="text-uppercase">Links</h5>
 
                         <ul class="list-unstyled mb-0">
@@ -140,7 +102,27 @@
                         </ul>
                     </div>
 
-                    <div class="col">
+                    <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                        <h5 class="text-uppercase">Links</h5>
+
+                        <ul class="list-unstyled mb-0">
+                            <li>
+                                <a href="#!" class="text-white">Link 1</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                        <h5 class="text-uppercase">Links</h5>
+
+                        <ul class="list-unstyled mb-0">
+                            <li>
+                                <a href="#!" class="text-white">Link 1</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
                         <h5 class="text-uppercase">Links</h5>
 
                         <ul class="list-unstyled mb-0">
@@ -159,7 +141,6 @@
     </footer>
 
 
-
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
@@ -171,8 +152,7 @@
         crossorigin="anonymous"></script>
     <script src="https://www.gstatic.com/firebasejs/8.1.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.1.0/firebase-database.js"></script>
-    <script src="assets/js/firebase-config.js"></script>
-    <script src="assets/js/tasks.js"></script>
+    <script type="module" src="assets/js/firebase-config.js"></script>
 
 </body>
 

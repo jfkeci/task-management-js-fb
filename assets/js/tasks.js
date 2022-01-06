@@ -7,7 +7,6 @@ createTaskBtn.addEventListener('click', addTask);
 
 getTasks();
 
-
 function addTask() {
     let task = inputTask.value;
 
