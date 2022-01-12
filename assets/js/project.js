@@ -114,6 +114,7 @@ function getTasks(projectId) {
                         '<th scope="row">' + counter + '</th>' +
                         '<td>' + task.task + '</td>' +
                         '<td>' + task.createdAt + '</td>' +
+                        '<td>' + task.assignedTo + '</td>' +
                         '<td><button type="button" class="btn btn-danger" onclick="deleteTask(this)" data-task-id="' + task.id + '">Delete</button></td > ' +
                         '</tr>'
                     counter++
