@@ -119,8 +119,10 @@ function getProjects() {
                     let teamList = '<ul style="height:10vh; overflow-x:auto; overflow-x:hidden; list-style-type:none;">'
 
                     if (team.length > 0) {
+                        let teamCount = 1
                         team.forEach(member => {
-                            teamList += '<li>' + member + '</li>'
+                            teamList += '<li>' + teamCount + '. <a href="/user.html?user=' + member + '" class="mr-3">' + member + '</a></li>'
+                            teamCount++
                         });
                         teamList += '</ul>'
                     }
@@ -132,12 +134,14 @@ function getProjects() {
                     html += '<div class="col-sm">' +
                         '<div class="card" style="width: 18rem;">' +
                         '<div class="card-body">' +
-                        '<a href="/projects.html?project=' + project.id + '" class="btn btn-primary btn-sm">' + project.title + '</a>' +
+                        '<a href="/projects.html?project=' + project.id + '" class="mr-3">Project: <b>' + project.title + '</b></a>' +
                         '<hr>' +
                         '<p class="card-text">' + project.description + '</p>' +
                         '<hr>' +
                         '<p>Team</p>' +
                         teamList +
+                        '<a href="/projects.html?project=' + project.id + '" class="btn btn-primary btn-sm m-2 btn-block">Show</a>' +
+                        '<a href="/projects.html?project=' + project.id + '" class="btn btn-primary btn-sm m-2 btn-block">Tasks</a>' +
                         '</div>' +
                         '</div>' +
                         '</div>';
@@ -197,12 +201,14 @@ function getUsers() {
 function addUser() {
     let newUser = usersSelect.value;
 
-    if (userArray.includes(newUser)) {
-        alert('User is already added to the project')
-    } else {
-        userArray.push(newUser);
-        console.log('users', userArray)
-        renderUserList();
+    if (newUser != '') {
+        if (userArray.includes(newUser)) {
+            alert('User is already added to the project')
+        } else {
+            userArray.push(newUser);
+            console.log('users', userArray)
+            renderUserList();
+        }
     }
     getUsers();
 }
