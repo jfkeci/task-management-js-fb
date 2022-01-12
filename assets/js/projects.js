@@ -1,11 +1,16 @@
+//Create project
 let inputTitle = document.getElementById('inputProjectTitle')
 let inputDescription = document.getElementById('inputProjectDescription')
 let createProjectBtn = document.getElementById('createProjectBtn')
 let addUserBtn = document.getElementById('addUserBtn')
+
+//Show projects
 let projectList = document.getElementById('projectList')
 let usersList = document.getElementById('usersList')
 let usersSelect = document.getElementById('usersSelect')
 
+//Show project tasks
+let projectTasks = document.getElementById('projectTasks')
 
 createProjectBtn.addEventListener('click', addProject);
 addUserBtn.addEventListener('click', addUser);
@@ -72,32 +77,6 @@ function deleteProject(row) {
     getProjects();
 }
 
-/*
-
-  <div class="row">
-
-  <div class="col-sm">
-
-    <div class="card" style="width: 18rem;">
-        <img class="card-img-top" src="..." alt="Card image cap">
-        <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-        </div>
-    </div>
-
-    </div>
-    <div class="col-sm">
-      One of three columns
-    </div>
-    <div class="col-sm">
-      One of three columns
-    </div>
-  </div>
-
-
-*/
 
 function getProjects() {
     let projects = []
@@ -140,8 +119,8 @@ function getProjects() {
                         '<hr>' +
                         '<p>Team</p>' +
                         teamList +
-                        '<a href="/projects.html?project=' + project.id + '" class="btn btn-primary btn-sm m-2 btn-block">Show</a>' +
-                        '<a href="/projects.html?project=' + project.id + '" class="btn btn-primary btn-sm m-2 btn-block">Tasks</a>' +
+                        '<a href="/project.html?id=' + project.id + '" class="btn btn-primary btn-sm m-2 btn-block">Show</a>' +
+                        '<a href="/project.html?id=' + project.id + '" class="btn btn-primary btn-sm m-2 btn-block">Tasks</a>' +
                         '</div>' +
                         '</div>' +
                         '</div>';
@@ -159,7 +138,7 @@ function getProjects() {
             html += '</div>'
         }
 
-        if (html.length < 50) {
+        if (counter == 1) {
             html = '<br><p>No projects</p><br>' +
                 '<div class="card" style="width: 18rem;">' +
                 '<i class="bi bi-plus-circle" style="font-size: 8rem; margin:auto;"></i>' +
@@ -172,6 +151,38 @@ function getProjects() {
         }
 
         projectList.innerHTML = html
+    })
+}
+
+function getTasks(projectId, projectTitle) {
+    let tasks = []
+    let html = ''
+    var task_ref = database.ref('tasks/')
+    task_ref.on('value', function (snapshot) {
+        if (snapshot.exists()) {
+            var data = snapshot.val()
+            tasks = Object.entries(data).map((e) => e[1])
+            let counter = 1;
+            projectTasks.innerHTML = ''
+            tasks.forEach(task => {
+                if (task.projectId == projectId) {
+                    html += '<tr>' +
+                        '<th scope="row">' + counter + '</th>' +
+                        '<td>' + task.task + '</td>' +
+                        '<td>' + task.createdAt + '</td>' +
+                        '<td><button type="button" class="btn btn-danger" onclick="deleteTask(this)" data-task-id="' + task.id + '">Delete</button></td > ' +
+                        '</tr>'
+                    counter++
+                }
+            })
+            if (counter == 1) {
+                projectTasks.innerHTML = '<p>No tasks found for project: ' + projectTitle + '</p>'
+            } else {
+                projectTasks.innerHTML = html
+            }
+        } else {
+            projectTasks.innerHTML = 'No tasks found'
+        }
     })
 }
 

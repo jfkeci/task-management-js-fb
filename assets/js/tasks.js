@@ -4,7 +4,6 @@ let tasksTable = document.getElementById('taskTable')
 
 createTaskBtn.addEventListener('click', addTask);
 
-
 getTasks();
 
 function addTask() {
@@ -36,6 +35,7 @@ function saveTask(id) {
     database.ref('tasks/' + id).set({
         id: id,
         task: task,
+        createdBy: localStorage.getItem('user'),
         createdAt: createdAt,
     })
 

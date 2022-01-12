@@ -29,33 +29,53 @@
 
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
-            <p class="lead">Projects</p>
+            <p class="lead">Project: </p>
         </div>
     </div>
     <div class="container">
         <div class="row">
-            <div class="col-2">
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">
-                    Add a project
-                </button>
+            <div class="col-4">
+                <button type="button" class="btn btn-primary btn-sm btn-block" data-toggle="modal"
+                    data-target="#addTaskModal">Add a
+                    Task</button>
+
+                <div class="card mt-3" style="width: 100%;">
+                    <div class="card-body">
+                        <h5 class="card-title" id="projectTitle"></h5>
+                        <hr>
+                        <p class="card-text" id="projectDescription"></p>
+                        <hr>
+                        <div id="projectTeam"></div>
+                    </div>
+                </div>
             </div>
-            <div id="projectList">
+            <div>
+                <div id="projectTasks">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">First</th>
+                                <th scope="col">Last</th>
+                                <th scope="col">Handle</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tasksTable">
+
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-2" id="allTasks"></div>
-            <div class="col" id="projectTasks"></div>
         </div>
     </div>
 
     <div id="modals">
         <!-- Add task modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
+        <div class="modal fade" id="addTaskModal" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Add a project</h5>
+                        <h5 class="modal-title" id="addTaskModalLabel">Add a task</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -63,31 +83,17 @@
                     <div class="modal-body">
                         <form>
                             <div class="form-group">
-                                <label for="inputProjectTitle">Title</label>
-                                <input type="text" id="inputProjectTitle" class="form-control"
-                                    placeholder="Project title">
-                                <label for="inputProjectDescription">Descrition</label>
-                                <textarea class="form-control" id="inputProjectDescription"
-                                    placeholder="What are you going to do?" rows="3"></textarea>
+                                <label>Task content</label>
+                                <input type="text" id="inputTask" class="form-control" placeholder="What is your task?">
                             </div>
-                            <hr>
-                            <h4>Add users to the project</h4>
-                            <div class="input-group">
-                                <select class="custom-select" id="usersSelect">
-                                </select>
-                                <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" id="addUserBtn" type="button"
-                                        onclick="addUser">addUser</button>
-                                </div>
-                            </div>
-                            <ul class="list-group mt-3" id="usersList">
-                                No users selected
-                            </ul>
+                            <select class="form-control" id="userSelectList" aria-label="Select user">
+
+                            </select>
                         </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" id="createProjectBtn" class="btn btn-primary">Save Project</button>
+                        <button type="button" id="createTaskBtn" class="btn btn-primary">Save Task</button>
                     </div>
                 </div>
             </div>
@@ -108,7 +114,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.1.0/firebase-database.js"></script>
     <script src="assets/js/site-boilerplate.js"></script>
     <script src="assets/js/firebase-config.js"></script>
-    <script src="assets/js/projects.js"></script>
+    <script src="assets/js/project.js"></script>
 
 </body>
 

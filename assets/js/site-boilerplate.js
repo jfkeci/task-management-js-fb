@@ -14,23 +14,23 @@ function setNavbar() {
         '<li class="nav-item active">' +
         '<a class="nav-link active" href="index.html">Home </a>' +
         '</li>' +
-        '<li class="nav-item">' +
+        '<li class="nav-item active">' +
         '<a class="nav-link active" href="about.html">About</a>' +
         '</li>' +
         '<li class="nav-item active">' +
         '<a class="nav-link active" href="tasks.html">Tasks </a>' +
         '</li>' +
-        '<li class="nav-item">' +
+        '<li class="nav-item active">' +
         '<a class="nav-link active" href="projects.html">Projects</a>' +
         '</li>' +
         '</ul>' +
         '<form class="form-inline my-2 my-lg-0">' +
         '<ul class="navbar-nav mr-auto">' +
-        '<li class="nav-item">' +
-        '<a class="nav-link" href="login.html">Login</a>' +
+        '<li class="nav-item active">' +
+        '<a class="nav-link active" href="login.html">Login</a>' +
         '</li>' +
-        '<li class="nav-item">' +
-        '<a class="nav-link" href="register.html">Register</a>' +
+        '<li class="nav-item active">' +
+        '<a class="nav-link active" href="register.html">Register</a>' +
         '</li>' +
         '</ul>' +
         '</form>' +
