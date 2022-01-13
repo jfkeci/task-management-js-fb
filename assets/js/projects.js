@@ -93,10 +93,10 @@ function getProjects() {
             projectList.innerHTML = ''
             projects.forEach(project => {
                 let team = project.team
-
-                if (team.includes(localStorage.getItem('user'))) {
+                let currentUser = localStorage.getItem('user')
+                let hasUser = team.includes(currentUser)
+                if (hasUser) {
                     let teamList = '<ul style="height:10vh; overflow-x:auto; overflow-x:hidden; list-style-type:none;">'
-
                     if (team.length > 0) {
                         let teamCount = 1
                         team.forEach(member => {
@@ -111,9 +111,9 @@ function getProjects() {
                     }
 
                     html += '<div class="col-sm">' +
-                        '<div class="card" style="width: 18rem;">' +
+                        '<div class="card m-2" style="width: 18rem;">' +
                         '<div class="card-body">' +
-                        '<a href="/projects.html?project=' + project.id + '" class="mr-3">Project: <b>' + project.title + '</b></a>' +
+                        '<a href="/project.html?id=' + project.id + '" class="mr-3">Project: <b>' + project.title + '</b></a>' +
                         '<hr>' +
                         '<p class="card-text">' + project.description + '</p>' +
                         '<hr>' +
@@ -134,23 +134,26 @@ function getProjects() {
                         '</tr>' */
                     counter++
                 }
+                projectList.innerHTML = html
             })
             html += '</div>'
-        }
+            console.log('html', html)
 
-        if (counter == 1) {
-            html = '<br><p>No projects</p><br>' +
-                '<div class="card" style="width: 18rem;">' +
-                '<i class="bi bi-plus-circle" style="font-size: 8rem; margin:auto;"></i>' +
-                '<div class="card-body" style="margin:auto;">' +
-                '<button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">' +
-                'Add a project</button>' +
-                '</div>' +
-                '</div>' +
-                '</div>'
-        }
+            if (counter == 1) {
+                html = '<br><p>No projects</p><br>' +
+                    '<div class="card" style="width: 18rem;">' +
+                    '<i class="bi bi-plus-circle" style="font-size: 8rem; margin:auto;"></i>' +
+                    '<div class="card-body" style="margin:auto;">' +
+                    '<button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">' +
+                    'Add a project</button>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>'
+            }
+            projectList.innerHTML = html
 
-        projectList.innerHTML = html
+
+        }
     })
 }
 

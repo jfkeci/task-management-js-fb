@@ -1,0 +1,140 @@
+{
+  "projects" : {
+    "8jOvmW7yHy" : {
+      "archived" : false,
+      "createdAt" : "Wed Jan 12 2022",
+      "createdBy" : "mmarkovic",
+      "description" : "description",
+      "id" : "8jOvmW7yHy",
+      "team" : [ "iivanovic" ],
+      "title" : "New project new ui"
+    },
+    "ALrftIYCuv" : {
+      "archived" : false,
+      "createdAt" : "Thu Jan 13 2022",
+      "description" : "OWP",
+      "id" : "ALrftIYCuv",
+      "team" : [ "mmarkovic", "martin123", "iivanovic" ],
+      "title" : "OWP"
+    },
+    "LwROEVpq0x" : {
+      "archived" : false,
+      "createdAt" : "Thu Jan 13 2022",
+      "description" : "M BANKING",
+      "id" : "LwROEVpq0x",
+      "team" : [ "mmarkovic", "iivanovic" ],
+      "title" : "PROJECT"
+    },
+    "UrpbA6Xywo" : {
+      "archived" : false,
+      "createdAt" : "Thu Jan 06 2022",
+      "createdBy" : "mmarkovic",
+      "description" : "just add a new project to see if the list updated propperly",
+      "id" : "UrpbA6Xywo",
+      "team" : [ "mmarkovic" ],
+      "title" : "new project with user"
+    },
+    "Wu5s2KVVGn" : {
+      "archived" : false,
+      "createdAt" : "Mon Jan 03 2022",
+      "createdBy" : "mmarkovic",
+      "description" : "nn",
+      "id" : "Wu5s2KVVGn",
+      "team" : [ "iivanovic" ],
+      "title" : "new1"
+    },
+    "XoovBoaUKG" : {
+      "createdAt" : "Mon Jan 03 2022",
+      "createdBy" : "mmarkovic",
+      "description" : "something",
+      "id" : "XoovBoaUKG",
+      "team" : [ "iivanovic" ],
+      "title" : "This will be the new project11"
+    },
+    "jAE6vsrdyh" : {
+      "archived" : false,
+      "createdAt" : "Wed Jan 12 2022",
+      "createdBy" : "mmarkovic",
+      "description" : "desc",
+      "id" : "jAE6vsrdyh",
+      "team" : [ "mmarkovic" ],
+      "title" : "title"
+    },
+    "oVkYGrJ2Ef" : {
+      "archived" : false,
+      "createdAt" : "Wed Jan 12 2022",
+      "createdBy" : "mmarkovic",
+      "description" : "iimm",
+      "id" : "oVkYGrJ2Ef",
+      "team" : [ "iivanovic", "mmarkovic" ],
+      "title" : "2 team "
+    },
+    "swo3MV13O2" : {
+      "archived" : false,
+      "createdAt" : "Thu Jan 13 2022",
+      "description" : "M BANKING",
+      "id" : "swo3MV13O2",
+      "title" : "PROJECT"
+    },
+    "zLev8S3C1d" : {
+      "archived" : false,
+      "createdAt" : "Mon Jan 03 2022",
+      "createdBy" : "mmarkovic",
+      "description" : "nn2",
+      "id" : "zLev8S3C1d",
+      "team" : [ "iivanovic" ],
+      "title" : "new2"
+    }
+  },
+  "tasks" : {
+    "h6G9uF7tpy" : {
+      "createdAt" : "Thu Jan 13 2022",
+      "id" : "h6G9uF7tpy",
+      "task" : "TASK"
+    },
+    "hvm73OALdF" : {
+      "assignedTo" : "mmarkovic",
+      "createdAt" : "Wed Jan 12 2022",
+      "createdBy" : "mmarkovic",
+      "id" : "hvm73OALdF",
+      "task" : "This is a new task"
+    },
+    "nGtoIfsCHo" : {
+      "createdAt" : "Thu Dec 16 2021",
+      "id" : "nGtoIfsCHo",
+      "task" : "This is a new task"
+    },
+    "rahNE2MFgz" : {
+      "createdAt" : "Wed Dec 15 2021",
+      "id" : "rahNE2MFgz",
+      "task" : "This is a new task3"
+    }
+  },
+  "users" : {
+    "iivanovic" : {
+      "email" : "mmarkovic@mail.com",
+      "name" : "Matija Matijevic",
+      "password" : "mkmk",
+      "username" : "iivanovic"
+    },
+    "martin" : {
+      "email" : "cikormartin100@gmail.com",
+      "name" : "martin",
+      "password" : "s2M9CPjb",
+      "username" : "martin"
+    },
+    "martin123" : {
+      "email" : "martin@vuv.hr",
+      "name" : "MARTIN",
+      "password" : "martin123",
+      "username" : "martin123"
+    },
+    "mmarkovic" : {
+      "email" : "mmarkovic@mail.com",
+      "favourite_food" : "kebrabus",
+      "password" : "mmarkovic123",
+      "say_something" : "mmarkovic je najjakiji",
+      "username" : "mmarkovic"
+    }
+  }
+}
