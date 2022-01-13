@@ -41,7 +41,7 @@ function setNavbar() {
 
 function setFooter() {
     let el = document.getElementById('footer');
-    let html = '<footer class="bg-dark text-center text-white">' +
+    let html = '<br><br><br><br><br><br><br><br><br><br><br><footer class="bg-dark text-center text-white">' +
         '<div class="container p-4">' +
         '<section class="mb-4">' +
         '<p>Task Management app</p>' +
