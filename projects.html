@@ -21,6 +21,15 @@
 
     <script src="assets/js/site-boilerplate.js"></script>
 
+    <style>
+        footer {
+            position: fixed;
+            padding: 10px 10px 0px 10px;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+
     <title>Task management</title>
 </head>
 
@@ -44,7 +53,21 @@
         </div>
         <div class="row">
             <div class="col-2" id="allTasks"></div>
-            <div class="col" id="projectTasks"></div>
+            <div class="col" id="projectTasks">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">First</th>
+                            <th scope="col">Last</th>
+                            <th scope="col">Handle</th>
+                        </tr>
+                    </thead>
+                    <tbody id="projectTasks">
+
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 

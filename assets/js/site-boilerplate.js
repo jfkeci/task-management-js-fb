@@ -44,6 +44,12 @@ function setFooter() {
     let html = '<footer class="bg-dark text-center text-white">' +
         '<div class="container p-4">' +
         '<section class="mb-4">' +
+        '<p>Task Management app</p>' +
+        '</section>' +
+        '<section class="">' +
+        '<div class="row">' +
+        '<div class="col">' +
+        '<section class="mb-4">' +
         '<a class="btn btn-outline-light btn-floating m-1" href="#!" role="button">' +
         '<i class="bi bi-facebook"></i></a>' +
         '<a class="btn btn-outline-light btn-floating m-1" href="#!" role="button">' +
@@ -51,18 +57,6 @@ function setFooter() {
         '<a class="btn btn-outline-light btn-floating m-1" href="#!" role="button">' +
         '<i class="bi bi-github"></i></a>' +
         '</section>' +
-        '<section class="mb-4">' +
-        '<p>Task Management app</p>' +
-        '</section>' +
-        '<section class="">' +
-        '<div class="row">' +
-        '<div class="col">' +
-        '<h5 class="text-uppercase">Links</h5>' +
-        '<ul class="list-unstyled mb-0">' +
-        '<li>' +
-        '<a href="#!" class="text-white">Link 1</a>' +
-        '</li>' +
-        '</ul>' +
         '</div>' +
         '<div class="col">' +
         '<h5 class="text-uppercase">Links</h5>' +
