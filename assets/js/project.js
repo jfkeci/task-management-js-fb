@@ -5,6 +5,7 @@ let teamEl = document.getElementById('projectTeam')
 let createTaskBtn = document.getElementById('createTaskBtn')
 let userSelectInput = document.getElementById('userSelectList')
 let taskInput = document.getElementById('inputTask')
+let dateInput = document.getElementById('inputTaskDate');
 
 let tasksTable = document.getElementById('tasksTable')
 
@@ -85,10 +86,12 @@ function saveTask(id) {
     let date = new Date(Date.now()).toString()
     let createdAt = date.substr(0, 15)
     let task = taskInput.value
+    let dueDate = dateInput.value;
     database.ref('tasks/' + id).set({
         id: id,
         task: task,
         project: localStorage.getItem('project'),
+        due: dueDate,
         assignedTo: assignedTo,
         createdBy: localStorage.getItem('user'),
         createdAt: createdAt,
@@ -97,6 +100,7 @@ function saveTask(id) {
     alert('Saved')
     getTasks()
 }
+
 
 function getTasks(projectId) {
     let tasks = []
@@ -114,7 +118,8 @@ function getTasks(projectId) {
                         '<th scope="row">' + counter + '</th>' +
                         '<td>' + task.task + '</td>' +
                         '<td>' + task.createdAt + '</td>' +
-                        '<td>' + task.assignedTo + '</td>' +
+                        '<td><a href="/user.html?id=' + task.assignedTo + '">' + task.assignedTo + '</a></td>' +
+                        '<td>' + task.due + '</td>' +
                         '<td><button type="button" class="btn btn-danger" onclick="deleteTask(this)" data-task-id="' + task.id + '">Delete</button></td > ' +
                         '</tr>'
                     counter++

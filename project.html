@@ -67,6 +67,7 @@
                                 <th scope="col">Task</th>
                                 <th scope="col">Created at</th>
                                 <th scope="col">For</th>
+                                <th scope="col">Due date</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -96,14 +97,23 @@
                                 <label>Task content</label>
                                 <input type="text" id="inputTask" class="form-control" placeholder="What is your task?">
                             </div>
-                            <select class="form-control" id="userSelectList" aria-label="Select user">
+                            <div class="form-group">
+                                <label>Assign to</label>
+                                <select class="form-control" id="userSelectList" aria-label="Select user">
 
-                            </select>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Due date</label>
+                                <input type="date" id="inputTaskDate" class="form-control">
+                            </div>
                         </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" id="createTaskBtn" class="btn btn-primary">Save Task</button>
+                        <button type="button" id="createTaskBtn" class="btn btn-primary">
+                            Save Task
+                        </button>
                     </div>
                 </div>
             </div>

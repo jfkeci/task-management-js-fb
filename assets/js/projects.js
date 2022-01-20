@@ -21,8 +21,10 @@ const projectId = urlParams.get('project');
 localStorage.setItem('project', projectId);
 
 
-getProjects();
-getUsers();
+$(document).ready(function () {
+    getProjects();
+    getUsers();
+});
 
 
 let userArray = [];
@@ -71,36 +73,41 @@ function saveProject(id) {
 
 function deleteProject(row) {
     let id = $(row).data("project-id")
-    database.ref('projects/' + id).remove()
+    let title = $(row).data("project-title")
+    console.log(id)
+    console.log(title)
+    /* database.ref('projects/' + id).remove()
 
     alert('deleted')
-    getProjects();
+    getProjects(); */
 }
 
 
 function getProjects() {
     let projects = []
 
-    let html = '<div class="row">'
+    let currentUser = localStorage.getItem('user')
+
+    let html = '<div class="card-deck">'
 
     let counter = 1;
 
-    var project_ref = database.ref('projects/')
+    let project_ref = database.ref('projects/')
     project_ref.on('value', function (snapshot) {
         if (snapshot.exists()) {
-            var data = snapshot.val()
+            let data = snapshot.val()
             projects = Object.entries(data).map((e) => e[1])
             projectList.innerHTML = ''
             projects.forEach(project => {
                 let team = project.team
-                let currentUser = localStorage.getItem('user')
+
                 let hasUser = team.includes(currentUser)
                 if (hasUser) {
                     let teamList = '<ul style="height:10vh; overflow-x:auto; overflow-x:hidden; list-style-type:none;">'
                     if (team.length > 0) {
                         let teamCount = 1
                         team.forEach(member => {
-                            teamList += '<li>' + teamCount + '. <a href="/user.html?user=' + member + '" class="mr-3">' + member + '</a></li>'
+                            teamList += '<li>' + teamCount + '. <a href="/user.html?id=' + member + '" class="mr-3">' + member + '</a></li>'
                             teamCount++
                         });
                         teamList += '</ul>'
@@ -119,45 +126,47 @@ function getProjects() {
                         '<hr>' +
                         '<p>Team</p>' +
                         teamList +
-                        '<a href="/project.html?id=' + project.id + '" class="btn btn-primary btn-sm m-2 btn-block">Show</a>' +
-                        '<a href="/project.html?id=' + project.id + '" class="btn btn-primary btn-sm m-2 btn-block">Tasks</a>' +
+                        '<div class="row">' +
+                        '<div class="col-sm">' +
+                        '<button class="btn btn-danger btn-sm m-1 btn-block" onclick="deleteProject(this)" data-project-id="' + project.id + '" data-project-title="' + project.title + '">Delete</button>' +
+                        '</div>' +
+                        '<div class="col-sm">' +
+                        '<button class="btn btn-primary btn-sm m-1 btn-block" onclick="getProjectTasks(this)" data-project-id="' + project.id + '">Tasks</button>' +
+                        '</div>' +
+                        '<div class="col-sm">' +
+                        '<a href="/project.html?id=' + project.id + '" class="btn btn-primary btn-sm m-1 btn-block">Show</a>' +
+                        '</div>' +
+                        '</div>' +
                         '</div>' +
                         '</div>' +
                         '</div>';
-                    /* html += '<tr style="cursor:pointer;">' +
-                        '<th scope="row">' + counter + '</th>' +
-                        '<td>' + project.title + '</td>' +
-                        '<td>' + project.description + '</td>' +
-                        '<td>' + project.createdAt + '</td>' +
-                        '<td>' + teamList + '</td>' +
-                        '<td><button type="button" class="btn btn-danger" onclick="deleteProject(this)" data-project-id="' + project.id + '">Delete</button></td > ' +
-                        '</tr>' */
                     counter++
                 }
                 projectList.innerHTML = html
             })
             html += '</div>'
-            console.log('html', html)
 
             if (counter == 1) {
                 html = '<br><p>No projects</p><br>' +
                     '<div class="card" style="width: 18rem;">' +
                     '<i class="bi bi-plus-circle" style="font-size: 8rem; margin:auto;"></i>' +
                     '<div class="card-body" style="margin:auto;">' +
-                    '<button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">' +
+                    '<button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalAddProject">' +
                     'Add a project</button>' +
                     '</div>' +
                     '</div>' +
                     '</div>'
             }
             projectList.innerHTML = html
-
-
         }
     })
 }
 
-function getTasks(projectId, projectTitle) {
+
+
+function getProjectTasks(projectCard) {
+    let projectId = $(projectCard).data("project-id")
+
     let tasks = []
     let html = ''
     var task_ref = database.ref('tasks/')
@@ -168,14 +177,20 @@ function getTasks(projectId, projectTitle) {
             let counter = 1;
             projectTasks.innerHTML = ''
             tasks.forEach(task => {
-                if (task.projectId == projectId) {
+                if (task.project == projectId) {
+                    console.log('im here');
+                    console.log('taskproject', task.project, 'project', projectId)
                     html += '<tr>' +
                         '<th scope="row">' + counter + '</th>' +
                         '<td>' + task.task + '</td>' +
+                        '<td>' + task.assignedTo + '</td>' +
+                        '<td>' + task.createdBy + '</td>' +
+                        '<td>' + task.due + '</td>' +
                         '<td>' + task.createdAt + '</td>' +
                         '<td><button type="button" class="btn btn-danger" onclick="deleteTask(this)" data-task-id="' + task.id + '">Delete</button></td > ' +
                         '</tr>'
                     counter++
+                    console.log(task)
                 }
             })
             if (counter == 1) {
@@ -184,7 +199,7 @@ function getTasks(projectId, projectTitle) {
                 projectTasks.innerHTML = html
             }
         } else {
-            projectTasks.innerHTML = 'No tasks found'
+            projectTasks.innerHTML = 'No tasks found select a project'
         }
     })
 }

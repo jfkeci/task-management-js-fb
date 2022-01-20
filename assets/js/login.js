@@ -2,7 +2,6 @@
 let inputUsername = document.getElementById('inputUsername')
 let loginPassword = document.getElementById('loginPassword')
 
-
 let loginBtn = document.getElementById('loginBtn')
 
 loginBtn.addEventListener('click', login);

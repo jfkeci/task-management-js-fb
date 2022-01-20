@@ -28,6 +28,12 @@
             bottom: 0;
             width: 100%;
         }
+
+        .projects {
+            height: 70vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
     </style>
 
     <title>Task management</title>
@@ -41,30 +47,30 @@
             <p class="lead">Projects</p>
         </div>
     </div>
-    <div class="container">
+    <div class="m-5">
         <div class="row">
-            <div class="col-2">
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">
+            <div class="col-1">
+                <button type="button" class="btn btn-primary btn-sm btn-block mt-2" data-toggle="modal"
+                    data-target="#exampleModal">
                     Add a project
                 </button>
             </div>
-            <div id="projectList">
+            <div id="projectList" class="projects" class="col-sm m-3">
             </div>
-        </div>
-        <div class="row">
-            <div class="col-2" id="allTasks"></div>
-            <div class="col" id="projectTasks">
+            <div class="col-sm mt-3">
                 <table class="table">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Task</th>
-                            <th scope="col">User</th>
+                            <th scope="col">For</th>
+                            <th scope="col">By</th>
+                            <th scope="col">Due</th>
                             <th scope="col">Created at</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody id="projectTasks">
-
                     </tbody>
                 </table>
             </div>
@@ -72,13 +78,12 @@
     </div>
 
     <div id="modals">
-        <!-- Add task modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        <div class="modal fade" id="modalAddProject" tabindex="-1" role="dialog" aria-labelledby="modalAddProjectLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Add a project</h5>
+                        <h5 class="modal-title" id="modalAddProjectLabel">Add a project</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -111,6 +116,27 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="button" id="createProjectBtn" class="btn btn-primary">Save Project</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalDeleteProject" tabindex="-1" role="dialog"
+            aria-labelledby="modalDeleteProjectLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalDeleteProjectLabel">Delete project</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" id="createProjectBtn" class="btn btn-primary">Delete Project</button>
                     </div>
                 </div>
             </div>

@@ -17,6 +17,8 @@ firebase.initializeApp(firebaseConfig);
 // Set database object
 var database = firebase.database()
 
+console.log('db', database)
+
 
 // Helper method
 function makeId() {

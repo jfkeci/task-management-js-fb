@@ -45,7 +45,6 @@ function saveTask(id) {
 
 function deleteTask(row) {
     let id = $(row).data("task-id")
-    console.log(id)
     database.ref('tasks/' + id).remove()
 
     alert('deleted')
