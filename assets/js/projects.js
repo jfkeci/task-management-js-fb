@@ -131,7 +131,7 @@ function getProjects() {
                         '<button class="btn btn-danger btn-sm m-1 btn-block" onclick="deleteProject(this)" data-project-id="' + project.id + '" data-project-title="' + project.title + '">Delete</button>' +
                         '</div>' +
                         '<div class="col-sm">' +
-                        '<button class="btn btn-primary btn-sm m-1 btn-block" onclick="getProjectTasks(this)" data-project-id="' + project.id + '">Tasks</button>' +
+                        '<button class="btn btn-primary btn-sm m-1 btn-block" onclick="getProjectTasks(this)" data-project-id="' + project.id + '" data-project-title="' + project.title + '">Tasks</button>' +
                         '</div>' +
                         '<div class="col-sm">' +
                         '<a href="/project.html?id=' + project.id + '" class="btn btn-primary btn-sm m-1 btn-block">Show</a>' +
@@ -166,6 +166,7 @@ function getProjects() {
 
 function getProjectTasks(projectCard) {
     let projectId = $(projectCard).data("project-id")
+    let projectTitle = $(projectCard).data("project-title")
 
     let tasks = []
     let html = ''
@@ -194,7 +195,7 @@ function getProjectTasks(projectCard) {
                 }
             })
             if (counter == 1) {
-                projectTasks.innerHTML = '<p>No tasks found for project: ' + projectTitle + '</p>'
+                projectTasks.innerHTML = '<p>No tasks found for project: <a href="/project.html?id=' + projectId + '">' + projectTitle + '</a></p>'
             } else {
                 projectTasks.innerHTML = html
             }
