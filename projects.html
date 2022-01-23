@@ -47,32 +47,53 @@
             <p class="lead">Projects</p>
         </div>
     </div>
+
+    <div id="alertContainer" class="m-2"></div>
+
     <div class="m-5">
         <div class="row">
             <div class="col-1">
                 <button type="button" class="btn btn-primary btn-sm btn-block mt-2" data-toggle="modal"
-                    data-target="#exampleModal">
+                    data-target="#modalAddProject">
                     Add a project
                 </button>
+                <div id="addTaskButtonContainer">
+
+                </div>
+                <hr>
+                <div id="sortButtonContainer">
+
+                </div>
+                <hr>
             </div>
             <div id="projectList" class="projects" class="col-sm m-3">
             </div>
-            <div class="col-sm mt-3">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Task</th>
-                            <th scope="col">For</th>
-                            <th scope="col">By</th>
-                            <th scope="col">Due</th>
-                            <th scope="col">Created at</th>
-                            <th scope="col"></th>
-                        </tr>
-                    </thead>
-                    <tbody id="projectTasks">
-                    </tbody>
-                </table>
+            <div class="col-sm mt-3 ml-3 mr-3" id="projectTasksContainer">
+                <hr>
+                <h5>Preview project tasks</h5>
+                <p>Press this button</p>
+                <button class="btn btn-primary btn-sm m-1">
+                    <i class="bi bi-list-task"></i>
+                </button>
+                <hr>
+                <h5>View the project</h5>
+                <p>Press this button</p>
+                <button class="btn btn-primary btn-sm m-1">
+                    <i class="bi bi-eye"></i>
+                </button>
+                <hr>
+                <h5>Edit the project</h5>
+                <p>Press this button</p>
+                <button class="btn btn-primary btn-sm m-1">
+                    <i class="bi bi-pencil-square"></i>
+                </button>
+                <hr>
+                <h5>Delete the project</h5>
+                <p>Press this button</p>
+                <button class="btn btn-danger btn-sm m-1">
+                    <i class="bi bi-trash"></i>
+                </button>
+                <hr>
             </div>
         </div>
     </div>
@@ -84,6 +105,50 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalAddProjectLabel">Add a project</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="inputProjectTitle">Title</label>
+                                <input type="text" id="inputProjectTitle" class="form-control"
+                                    placeholder="Project title">
+                                <label for="inputProjectDescription">Descrition</label>
+                                <textarea class="form-control" id="inputProjectDescription"
+                                    placeholder="What are you going to do?" rows="3"></textarea>
+                            </div>
+                            <hr>
+                            <h4>Add users to the project</h4>
+                            <div class="input-group">
+                                <select class="custom-select" id="usersSelect">
+                                </select>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" id="addUserBtn" type="button"
+                                        onclick="addUser">addUser</button>
+                                </div>
+                            </div>
+                            <ul class="list-group mt-3" id="usersList">
+                                No users selected
+                            </ul>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" id="createProjectBtn" class="btn btn-primary" data-dismiss="modal"
+                            onclick="addProject()">Save Project</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalUpdateProject" tabindex="-1" role="dialog"
+            aria-labelledby="modalUpdateProjectLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalUpdateProjectLabel">Update a project</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -133,10 +198,15 @@
                     </div>
                     <div class="modal-body">
 
+                        <h5 id="deleteProjectMessage"></h5>
+                        <input type="hidden" id="deleteModalProjectId">
+                        <input type="hidden" id="deleteModalProjectTitle">
+
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" id="createProjectBtn" class="btn btn-primary">Delete Project</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"
+                            onclick="deleteProject()">Yes</button>
                     </div>
                 </div>
             </div>

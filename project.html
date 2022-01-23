@@ -95,11 +95,16 @@
                         <form>
                             <div class="form-group">
                                 <label>Task content</label>
-                                <input type="text" id="inputTask" class="form-control" placeholder="What is your task?">
+                                <input type="text" id="inputTaskTitle" class="form-control"
+                                    placeholder="What is your task?">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputTaskDescription">Task description</label>
+                                <textarea class="form-control" id="inputTaskDescription" rows="3"></textarea>
                             </div>
                             <div class="form-group">
                                 <label>Assign to</label>
-                                <select class="form-control" id="userSelectList" aria-label="Select user">
+                                <select class="form-control" id="inputTaskCreatedFor" aria-label="Select user">
 
                                 </select>
                             </div>

@@ -1,4 +1,3 @@
-console.log('firebase is loaded')
 
 const firebaseConfig = {
     apiKey: "AIzaSyByKK5JwSGDlwlgVwJfqy6qffZ_lzE7MEA",
@@ -16,9 +15,6 @@ firebase.initializeApp(firebaseConfig);
 
 // Set database object
 var database = firebase.database()
-
-console.log('db', database)
-
 
 // Helper method
 function makeId() {

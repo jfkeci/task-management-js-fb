@@ -55,41 +55,15 @@
                             <th scope="col">Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="taskTable">
+                    <tbody id="task-list-table">
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <div id="modals">
-        <!-- Add task modal -->
-        <div class="modal fade" id="addTaskModal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addTaskModalLabel">Add a task</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="form-group">
-                                <label>Task content</label>
-                                <input type="text" id="inputTask" class="form-control" placeholder="What is your task?">
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" id="createTaskBtn" class="btn btn-primary">Save Task</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <div id="tasks-table-container"></div>
+    <div id="tasks-modal-container"></div>
 
     <br><br>
     <div id="footer"></div>

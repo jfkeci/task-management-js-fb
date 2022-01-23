@@ -1,4 +1,4 @@
-letloginLinksHtml = '<li class="nav-item active">' +
+let loginLinksHtml = '<li class="nav-item active">' +
     '<a class="nav-link active" href="login.html">Login</a>' +
     '</li>' +
     '<li class="nav-item active">' +
@@ -43,6 +43,9 @@ function setNavbar() {
         '</ul>' +
         '</form>' +
         '</div>' +
+        '<div>' +
+        '<link rel="stylesheet" href="assets/css/main.css">' +
+        '</div>' +
         '</nav>';
     el.innerHTML = html;
 }
@@ -83,4 +86,40 @@ function setFooter() {
         '</footer>';
 
     el.innerHTML = html;
+}
+
+function setMessage(message, type = false) {
+    let alertHtml = ''
+
+    let alertContainer = document.getElementById('alertContainer') || false
+
+    if (alertContainer) {
+
+        if (type) {
+            alertHtml = '<div class="alert alert-' + type + '" role="alert">' +
+                message +
+                '</div>';
+        } else {
+            alertHtml = '<div class="alert alert-success" role="alert">' +
+                message +
+                '</div>';
+        }
+
+        alertContainer.innerHTML = alertHtml
+    }
+
+    setInterval(function () { alertContainer.innerHTML = '' }, 5000);
+
+}
+
+function getDate() {
+    let date = new Date(Date.now());
+
+    let day = date.getDate()
+    let month = date.getMonth() + 1
+    let year = date.getFullYear()
+
+    let currentDate = day + '.' + month + '.' + year + '.'
+
+    return currentDate
 }

@@ -10,10 +10,20 @@ let usersList = document.getElementById('usersList')
 let usersSelect = document.getElementById('usersSelect')
 
 //Show project tasks
-let projectTasks = document.getElementById('projectTasks')
+let projectTasksContainer = document.getElementById('projectTasksContainer')
 
-createProjectBtn.addEventListener('click', addProject);
-addUserBtn.addEventListener('click', addUser);
+// Sort
+let sortOptions = document.getElementById('sortButtonContainer')
+
+
+let currentUser = localStorage.getItem('user')
+
+
+let userTeamArray = [];
+
+let userArray = null
+let projectsArray = null
+let tasksArray = null
 
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -25,9 +35,6 @@ $(document).ready(function () {
     getProjects();
     getUsers();
 });
-
-
-let userArray = [];
 
 
 function addProject() {
@@ -55,38 +62,50 @@ function addProject() {
 function saveProject(id) {
     var title = inputTitle.value
     var description = inputDescription.value
-    let date = new Date(Date.now()).toString()
-    let createdAt = date.substr(0, 15)
+
     database.ref('projects/' + id).set({
         id: id,
         title: title,
         description: description,
-        team: userArray,
+        team: userTeamArray,
         archived: false,
-        createdBy: localStorage.getItem('user'),
-        createdAt: createdAt,
+        createdBy: currentUser,
+        createdAt: getDate(),
     })
 
     alert('Saved')
     getProjects()
 }
 
-function deleteProject(row) {
+function deleteValidation(row) {
     let id = $(row).data("project-id")
     let title = $(row).data("project-title")
-    console.log(id)
-    console.log(title)
-    /* database.ref('projects/' + id).remove()
 
-    alert('deleted')
-    getProjects(); */
+    let deleteProjectMessage = document.getElementById('deleteProjectMessage')
+    let deleteModalProjectId = document.getElementById('deleteModalProjectId')
+    let deleteModalProjectTitle = document.getElementById('deleteModalProjectTitle')
+
+    deleteModalProjectId.value = id
+    deleteModalProjectTitle.value = title
+    deleteProjectMessage.innerHTML = 'Are you sure you want to delete project <a href="/project.html?id=' + id + '">' + title + '</a>'
+}
+
+function deleteProject() {
+    let projectId = document.getElementById('deleteModalProjectId').value
+    let projectTitle = document.getElementById('deleteModalProjectTitle').value
+    database.ref('projects/' + projectId).remove()
+    setMessage('Project "' + projectTitle + '" removed successfully')
+    getProjects();
 }
 
 
-function getProjects() {
+function getProjects(group = false) { // user | team | all
     let projects = []
 
-    let currentUser = localStorage.getItem('user')
+    sortOptions.innerHTML = '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getProjects(\'team\')">Team</button>' +
+        '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getProjects(\'user\')">Created by you</button>' +
+        '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getProjects()">All</button>' +
+        '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getProjects(\'archived\')">Archived</button>'
 
     let html = '<div class="card-deck">'
 
@@ -97,20 +116,49 @@ function getProjects() {
         if (snapshot.exists()) {
             let data = snapshot.val()
             projects = Object.entries(data).map((e) => e[1])
+            projectsArray = projects
             projectList.innerHTML = ''
             projects.forEach(project => {
                 let team = project.team
 
-                let hasUser = team.includes(currentUser)
-                if (hasUser) {
-                    let teamList = '<ul style="height:10vh; overflow-x:auto; overflow-x:hidden; list-style-type:none;">'
+                let filterCondition = false
+
+                if (group == 'user') {
+                    filterCondition = project.createdBy == currentUser && !project.archived
+                } else if (group == 'team') {
+                    filterCondition = team.includes(currentUser) && !project.archived
+                } else if (group == 'archived') {
+                    filterCondition = (team.includes(currentUser) || project.createdBy == currentUser) && project.archived
+                } else {
+                    filterCondition = (team.includes(currentUser) || project.createdBy == currentUser) && !project.archived
+                }
+
+                if (filterCondition) {
+
+                    let buttonGroup = ''
+
+                    if (project.createdBy == currentUser) {
+                        buttonGroup += '<button class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#modalDeleteProject" onclick="deleteValidation(this)" data-project-id="' + project.id + '" data-project-title="' + project.title + '" ><i class="bi bi-trash"></i></button>' +
+                            '<button class="btn btn-primary btn-sm m-1" onclick="getProjectTasks(this)" data-project-id="' + project.id + '" data-project-title="' + project.title + '"><i class="bi bi-pencil-square"></i></button>';
+                    }
+
+                    buttonGroup += '<button class="btn btn-primary btn-sm m-1" onclick="getProjectTasks(this)" data-project-id="' + project.id + '" data-project-title="' + project.title + '"><i class="bi bi-list-task"></i></button>' +
+
+                        '<a href="/project.html?id=' + project.id + '" class="btn btn-primary btn-sm m-1"><i class="bi bi-eye"></i></a>'
+
+                    let teamList = ''
                     if (team.length > 0) {
                         let teamCount = 1
                         team.forEach(member => {
-                            teamList += '<li>' + teamCount + '. <a href="/user.html?id=' + member + '" class="mr-3">' + member + '</a></li>'
+                            if (teamCount <= 5) {
+                                teamList += '<a href="/user.html?id=' + member + '" class="btn btn-info btn-sm m-1">' + member + '</a>'
+                            }
+
+                            if (teamCount == 6) {
+                                teamList += '<a href="/project.html?id=' + project.id + '" class="btn btn-info btn-sm m-1"><i class="bi bi-eye"></i></a>'
+                            }
                             teamCount++
                         });
-                        teamList += '</ul>'
                     }
                     if (counter == 3) {
                         html += '</div><div class="row">'
@@ -118,25 +166,17 @@ function getProjects() {
                     }
 
                     html += '<div class="col-sm">' +
-                        '<div class="card m-2" style="width: 18rem;">' +
+                        '<div class="card text-white bg-dark m-2" style="width: 18rem;">' +
                         '<div class="card-body">' +
                         '<a href="/project.html?id=' + project.id + '" class="mr-3">Project: <b>' + project.title + '</b></a>' +
                         '<hr>' +
                         '<p class="card-text">' + project.description + '</p>' +
                         '<hr>' +
-                        '<p>Team</p>' +
+                        '<div>' +
                         teamList +
-                        '<div class="row">' +
-                        '<div class="col-sm">' +
-                        '<button class="btn btn-danger btn-sm m-1 btn-block" onclick="deleteProject(this)" data-project-id="' + project.id + '" data-project-title="' + project.title + '">Delete</button>' +
                         '</div>' +
-                        '<div class="col-sm">' +
-                        '<button class="btn btn-primary btn-sm m-1 btn-block" onclick="getProjectTasks(this)" data-project-id="' + project.id + '" data-project-title="' + project.title + '">Tasks</button>' +
-                        '</div>' +
-                        '<div class="col-sm">' +
-                        '<a href="/project.html?id=' + project.id + '" class="btn btn-primary btn-sm m-1 btn-block">Show</a>' +
-                        '</div>' +
-                        '</div>' +
+                        '<hr>' +
+                        '<div>' + buttonGroup + '</div>' +
                         '</div>' +
                         '</div>' +
                         '</div>';
@@ -158,6 +198,9 @@ function getProjects() {
                     '</div>'
             }
             projectList.innerHTML = html
+
+            let addTaskButtonContainer = document.getElementById('addTaskButtonContainer')
+            addTaskButtonContainer.innerHTML = '<button type="button" class="btn btn-primary btn-sm btn-block mt-2">Add a task</button>'
         }
     })
 }
@@ -176,11 +219,15 @@ function getProjectTasks(projectCard) {
             var data = snapshot.val()
             tasks = Object.entries(data).map((e) => e[1])
             let counter = 1;
-            projectTasks.innerHTML = ''
             tasks.forEach(task => {
-                if (task.project == projectId) {
-                    console.log('im here');
-                    console.log('taskproject', task.project, 'project', projectId)
+                if (task.project == projectId /* && (tasks.createdFor == currentUser || tasks.createdBy == currentUser) */) {
+                    let buttonGroup = '<button type="button" class="btn btn-primary btn-sm m-1" data-task-id="' + task.id + '"><i class="bi bi-pencil-square"></i></button>' +
+                        '<button type="button" class="btn btn-danger btn-sm m-1" data-task-id="' + task.id + '"><i class="bi bi-trash"></i></button>'
+
+                    if (task.createdFor == currentUser) {
+                        buttonGroup += '<button type="button" class="btn btn-danger btn-sm m-1" data-task-id="' + task.id + '"><i class="bi bi-chech"></i></button>'
+                    }
+
                     html += '<tr>' +
                         '<th scope="row">' + counter + '</th>' +
                         '<td>' + task.task + '</td>' +
@@ -188,19 +235,37 @@ function getProjectTasks(projectCard) {
                         '<td>' + task.createdBy + '</td>' +
                         '<td>' + task.due + '</td>' +
                         '<td>' + task.createdAt + '</td>' +
-                        '<td><button type="button" class="btn btn-danger" onclick="deleteTask(this)" data-task-id="' + task.id + '">Delete</button></td > ' +
+                        '<td>' +
+                        buttonGroup +
+                        '</td>' +
+                        '<!--<td><button type="button" class="btn btn-danger" onclick="deleteTask(this)" data-task-id="' + task.id + '">Delete</button></td > -->' +
                         '</tr>'
                     counter++
-                    console.log(task)
                 }
             })
             if (counter == 1) {
-                projectTasks.innerHTML = '<p>No tasks found for project: <a href="/project.html?id=' + projectId + '">' + projectTitle + '</a></p>'
+                projectTasksContainer.innerHTML = '<hr><h5>No tasks found for project: <a href="/project.html?id=' + projectId + '">' + projectTitle + '</a></h5><small>No tasks created by you or assigned by you on this project</small><hr><br>'
             } else {
+                projectTasksContainer.innerHTML = '<table class="table">' +
+                    '<thead>' +
+                    '<tr>' +
+                    '<th scope="col">#</th>' +
+                    '<th scope="col">Task</th>' +
+                    '<th scope="col">For</th>' +
+                    '<th scope="col">By</th>' +
+                    '<th scope="col">Due</th>' +
+                    '<th scope="col">Created at</th>' +
+                    '<th scope="col"></th>' +
+                    '</tr>' +
+                    '</thead>' +
+                    '<tbody id="projectTasks">' +
+                    '</tbody>' +
+                    '</table>';
+                let projectTasks = document.getElementById('projectTasks')
                 projectTasks.innerHTML = html
             }
         } else {
-            projectTasks.innerHTML = 'No tasks found select a project'
+            projectTasksContainer.innerHTML = '<br><hr><h5>No tasks found for project: <a href="/project.html?id=' + projectId + '">' + projectTitle + '</a></h5><small>No tasks created by you or assigned by you on this project</small><hr><br>'
         }
     })
 }
@@ -216,7 +281,7 @@ function getUsers() {
             let counter = 1;
             usersSelect.innerHTML = ''
             users.forEach(user => {
-                if (!userArray.includes(user.username)) {
+                if (!userTeamArray.includes(user.username)) {
                     html += '<option value="' + user.username + '">' + user.username + '</option>'
                 }
                 counter++
@@ -232,11 +297,10 @@ function addUser() {
     let newUser = usersSelect.value;
 
     if (newUser != '') {
-        if (userArray.includes(newUser)) {
+        if (userTeamArray.includes(newUser)) {
             alert('User is already added to the project')
         } else {
-            userArray.push(newUser);
-            console.log('users', userArray)
+            userTeamArray.push(newUser);
             renderUserList();
         }
     }
@@ -245,14 +309,21 @@ function addUser() {
 
 function renderUserList() {
     let html = '';
-    if (userArray.length == 0) {
+    if (userTeamArray.length == 0) {
         usersList.innerHTML = 'No users found'
     } else {
         let counter = 1;
-        userArray.forEach(user => {
-            html += '<li class="list-group-item">' + counter + '. ' + user + ' <button type="button" class="btn btn-danger ml-1 btn-sm"><i class="bi-person-x-fill"></i></button></li>'
+        userTeamArray.forEach(user => {
+            html += '<li class="list-group-item">' + counter + '. ' + user + ' <button type="button" class="btn btn-danger ml-1 btn-sm float-right" data-user="' + user + '" onclick="removeUserFromProjectlist(this)"><i class="bi-person-x-fill"></i></button></li>'
             counter++
         });
         usersList.innerHTML = html
     }
+}
+
+function removeUserFromProjectlist(button) {
+    let username = $(button).data("user")
+    userTeamArray = userTeamArray.filter(value => value != username)
+    getUsers();
+    renderUserList();
 }
