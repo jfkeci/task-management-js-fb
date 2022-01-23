@@ -33,6 +33,7 @@ $(document).ready(function () {
             getTasks();
         }
         getProjects();
+        getCheckedTasks();
     }
 
 
@@ -100,6 +101,7 @@ function checkTask(button) {
             database.ref('tasks/' + task.id).set(task)
             setMessage('Checked task ' + task.title)
             getTasks()
+            getCheckedTasks();
         }
     })
 }
@@ -122,6 +124,57 @@ function checkTask(button) {
 
 function getComments(taskId) {
 
+}
+
+function getCheckedTasks() {
+    let checkedTasksTableContainer = document.getElementById('checkedTasksTableContainer')
+
+    checkedTasksTableContainer.innerHTML = '<h5>Finished tasks</h5><table class="table table-dark" style="max-height: 55vh; height: 50vh; overflow-x:hidden; overflow-y:auto;">' +
+        '<thead>' +
+        '<tr>' +
+        '<th scope="col">#</th>' +
+        '<th scope="col">Task</th>' +
+        '<th scope="col">For</th>' +
+        '<th scope="col">By</th>' +
+        '<th scope="col">Due</th>' +
+        '<th scope="col">Created at</th>' +
+        '<th scope="col"></th>' +
+        '</tr>' +
+        '</thead>' +
+        '<tbody id="checkedTasksTable" >' +
+        '</tbody>' +
+        '</table>';
+    let tasks_ref = database.ref('tasks/')
+    tasks_ref.on('value', function (snapshot) {
+        if (snapshot.exists()) {
+            let data = snapshot.val()
+            let tasks = Object.entries(data).map((e) => e[1])
+            let counter = 1
+            let html = ''
+
+
+            tasks.forEach(task => {
+                if (task.finished && (task.createdBy == currentUser || task.createdFor == currentUser)) {
+                    html += '<tr>' +
+                        '<th scope="row">' + counter + '</th>' +
+                        '<td>' + task.title + '</td>' +
+                        '<td>' + task.createdFor + '</td>' +
+                        '<td>' + task.createdBy + '</td>' +
+                        '<td>' + task.due + '</td>' +
+                        '<td>' + task.createdAt + '</td>' +
+                        '</tr>'
+                    counter++
+                }
+            });
+            let checkedTasksTable = document.getElementById('checkedTasksTable')
+
+            if (counter == 1) {
+                checkedTasksTableContainer.innerHTML = '<hr><h5>No checked tasks</h5><hr>'
+            } else {
+                checkedTasksTable.innerHTML = html
+            }
+        }
+    })
 }
 
 function testIt() {
