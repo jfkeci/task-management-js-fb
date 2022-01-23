@@ -88,6 +88,22 @@ function saveTask(id, task) {
     getTasks()
 }
 
+function checkTask(button) {
+    let taskId = $(button).data("task")
+
+    let tasks_ref = database.ref('tasks/' + taskId)
+    tasks_ref.on('value', function (snapshot) {
+        if (snapshot.exists()) {
+            let task = snapshot.val()
+            task.finished = true
+
+            database.ref('tasks/' + task.id).set(task)
+            setMessage('Checked task ' + task.title)
+            getTasks()
+        }
+    })
+}
+
 /* function _saveTask(id) {
     let task = inputTask.value
     let date = new Date(Date.now()).toString()
@@ -223,21 +239,20 @@ async function getTasks(group = null, filter = '') { // user | team | all | sear
             let tasks = Object.entries(data).map((e) => e[1])
 
             tasks.forEach(task => {
-
-
                 if (group == 'team') {
-                    filterCondition = task.createdFor == currentUser
+                    filterCondition = task.createdFor == currentUser && !task.finished
                 } else if (group == 'user') {
-                    filterCondition = task.createdBy == currentUser
+                    filterCondition = task.createdBy == currentUser && !task.finished
                 } else if (group == 'search' && filter.length > 0) {
-                    filterCondition = task.title.includes('filter')
+                    filterCondition = task.title.includes('filter') && !task.finished
                 } else if (group == 'project' && filter) {
-                    filterCondition = task.project == filter
+                    filterCondition = task.project == filter && !task.finished
                 } else {
-                    filterCondition = task.createdBy == currentUser || task.createdFor == currentUser
+                    filterCondition = (task.createdBy == currentUser || task.createdFor == currentUser) && !task.finished
                 }
 
                 if (filterCondition) {
+                    console.log(task.finished)
                     taskCount++
                     let buttonGroup = ''
                     if (task.createdBy == currentUser) {
@@ -245,12 +260,11 @@ async function getTasks(group = null, filter = '') { // user | team | all | sear
                             '<button class="btn btn-primary btn-sm m-1"><i class="bi bi-pencil-square"></i></button>';
                     }
 
-                    buttonGroup += '<button class="btn btn-success btn-sm m-1" onclick="getProjectTasks(this)" data-project-id="' + task.id + '" data-project-title="' + task.title + '"><i class="bi bi-check"></i></button>'
+                    buttonGroup += '<button class="btn btn-success btn-sm m-1"  data-task="' + task.id + '" onclick="checkTask(this)"><i class="bi bi-check"></i></button>'
 
                     html += '<tr>' +
                         '<th scope="row">' + counter + '</th>' +
                         '<td>' + task.title + '</td>' +
-                        '<td>' + getProjectTitle(task.project) + '</td>' +
                         '<td>' + task.createdFor + '</td>' +
                         '<td>' + task.createdBy + '</td>' +
                         '<td>' + task.due + '</td>' +

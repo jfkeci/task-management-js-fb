@@ -20,8 +20,8 @@ let currentUser = localStorage.getItem('user') || false
 
 
 let userTeamArray = [];
+let updateTeamArray = [];
 
-let userArray = null
 let projectsArray = null
 let tasksArray = null
 
@@ -143,7 +143,8 @@ function getProjects(group = false) { // user | team | all
 
                     if (project.createdBy == currentUser) {
                         buttonGroup += '<button class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#modalDeleteProject" onclick="deleteValidation(this)" data-project-id="' + project.id + '" data-project-title="' + project.title + '" ><i class="bi bi-trash"></i></button>' +
-                            '<button class="btn btn-primary btn-sm m-1" onclick="getProjectTasks(this)" data-project-id="' + project.id + '" data-project-title="' + project.title + '"><i class="bi bi-pencil-square"></i></button>';
+                            '<button class="btn btn-primary btn-sm m-1" onclick="editProject(this)" data-project="' + project.id + '" data-toggle="modal" data-target="#modalUpdateProject"><i class="bi bi-pencil-square"></i></button>' +
+                            '<button class="btn btn-primary btn-sm m-1" onclick="archiveProject(this)" data-project="' + project.id + '"><i class="bi bi-archive"></i></button>';
                     }
 
                     buttonGroup += '<button class="btn btn-primary btn-sm m-1" onclick="getProjectTasks(this)" data-project-id="' + project.id + '" data-project-title="' + project.title + '"><i class="bi bi-list-task"></i></button>' +
@@ -190,21 +191,85 @@ function getProjects(group = false) { // user | team | all
             html += '</div>'
 
             if (counter == 1) {
-                html = '<br><p>No projects</p><br>' +
-                    '<div class="card" style="width: 18rem;">' +
-                    '<i class="bi bi-plus-circle" style="font-size: 8rem; margin:auto;"></i>' +
-                    '<div class="card-body" style="margin:auto;">' +
-                    '<button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalAddProject">' +
-                    'Add a project</button>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>'
+                if (group == 'archived') {
+                    html = '<hr><h5>No projects here</h5><hr>'
+                } else {
+                    html = '<br><p>No projects</p><br>' +
+                        '<div class="card" style="width: 18rem;">' +
+                        '<i class="bi bi-plus-circle" style="font-size: 8rem; margin:auto;"></i>' +
+                        '<div class="card-body" style="margin:auto;">' +
+                        '<button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalAddProject">' +
+                        'Add a project</button>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>'
+                }
+
             }
             projectList.innerHTML = html
         }
     })
 }
 
+function editProject(card) {
+    let projectId = $(card).data("project")
+
+    let inputUpdateTitle = document.getElementById('inputUpdateTitle')
+    let inputUpdateDescription = document.getElementById('inputUpdateDescription')
+
+    var project_ref = database.ref('projects/' + projectId)
+    project_ref.on('value', function (snapshot) {
+        if (snapshot.exists()) {
+            let updateTeamListHtml = ''
+            let userSelectHtml = '';
+            var data = snapshot.val()
+            inputUpdateTitle.value = data.title
+            inputUpdateDescription.value = data.description
+
+            let team = data.team
+
+            let somethinghere = 'mkdsmakdasm'
+
+            database.ref('users/').on('value', function (userSnapshot) {
+                if (userSnapshot.exists()) {
+                    let userData = userSnapshot.val()
+                    users = Object.entries(userData).map((e) => e[1])
+                    users.forEach(user => {
+                        if (!team.includes(user.username)) {
+                            userSelectHtml += '<option value="' + user.username + '">' + user.username + '</option>'
+                        }
+                    });
+                }
+            })
+
+            let counter = 1;
+            team.forEach(member => {
+                updateTeamListHtml += '<li class="list-group-item">' + counter + '. ' + member + ' <button type="button" class="btn btn-danger ml-1 btn-sm float-right" ><i class="bi-person-x-fill"></i></button></li>'
+
+                counter++
+            });
+
+            let updateProjectTeamList = document.getElementById('updateUsersList')
+            updateProjectTeamList.innerHTML = updateTeamListHtml
+            let editUserSelect = document.getElementById('editUserSelect')
+            editUserSelect.innerHTML = userSelectHtml
+        }
+    })
+}
+
+function archiveProject(card) {
+    let projectId = $(card).data("project")
+    var project_ref = database.ref('projects/' + projectId)
+    project_ref.on('value', function (snapshot) {
+        if (snapshot.exists()) {
+            let project = snapshot.val()
+            project.archived = true
+
+            database.ref('projects/' + project.id).set(project)
+            getProjects()
+        }
+    })
+}
 
 
 function getProjectTasks(projectCard) {
@@ -326,4 +391,24 @@ function removeUserFromProjectlist(button) {
     userTeamArray = userTeamArray.filter(value => value != username)
     getUsers();
     renderUserList();
+}
+
+
+function renderUpdateUserList() {
+    let html = '';
+    if (userTeamArray.length == 0) {
+        usersList.innerHTML = 'No users found'
+    } else {
+        let counter = 1;
+        userTeamArray.forEach(user => {
+            html += '<li class="list-group-item">' + counter + '. ' + user + ' <button type="button" class="btn btn-danger ml-1 btn-sm float-right" data-user="' + user + '" onclick="removeUserFromProjectlist(this)"><i class="bi-person-x-fill"></i></button></li>'
+            counter++
+        });
+        usersList.innerHTML = html
+    }
+}
+
+function removeUserFromUpdateProjectlist(button) {
+    let username = $(button).data("user")
+    updateTeamArray = updateTeamArray.filter(value => value != username)
 }

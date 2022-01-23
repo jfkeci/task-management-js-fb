@@ -58,7 +58,9 @@
                     Add a project
                 </button>
                 <div id="addTaskButtonContainer">
-                    <button type="button" class="btn btn-primary btn-sm btn-block mt-2">Add a task</button>
+                    <a href="/tasks.html?addtask=true" class="btn btn-primary btn-sm btn-block mt-2">
+                        Add a task
+                    </a>
                 </div>
                 <hr>
                 <div id="sortButtonContainer">
@@ -148,7 +150,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalUpdateProjectLabel">Update a project</h5>
+                        <h5 class="modal-title" id="modalUpdateProjectLabel">Update project</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -156,24 +158,24 @@
                     <div class="modal-body">
                         <form>
                             <div class="form-group">
-                                <label for="inputProjectTitle">Title</label>
-                                <input type="text" id="inputProjectTitle" class="form-control"
+                                <label for="inputUpdateTitle">Title</label>
+                                <input type="text" id="inputUpdateTitle" class="form-control"
                                     placeholder="Project title">
-                                <label for="inputProjectDescription">Descrition</label>
-                                <textarea class="form-control" id="inputProjectDescription"
+                                <label for="inputUpdateDescription">Descrition</label>
+                                <textarea class="form-control" id="inputUpdateDescription"
                                     placeholder="What are you going to do?" rows="3"></textarea>
                             </div>
                             <hr>
                             <h4>Add users to the project</h4>
                             <div class="input-group">
-                                <select class="custom-select" id="usersSelect">
+                                <select class="custom-select" id="editUserSelect">
                                 </select>
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" id="addUserBtn" type="button"
-                                        onclick="addUser">addUser</button>
+                                        onclick="addUser()">Add</button>
                                 </div>
                             </div>
-                            <ul class="list-group mt-3" id="usersList">
+                            <ul class="list-group mt-3" id="updateUsersList">
                                 No users selected
                             </ul>
                         </form>

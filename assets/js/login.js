@@ -1,3 +1,7 @@
+if (localStorage.getItem('user')) {
+    window.location.href = '/projects.html'
+}
+
 // Input Login
 let inputEmail = document.getElementById('inputEmail')
 let loginPassword = document.getElementById('loginPassword')

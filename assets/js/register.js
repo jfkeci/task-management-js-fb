@@ -1,3 +1,6 @@
+if (localStorage.getItem('user')) {
+    window.location.href = '/projects.html'
+}
 // Input Register
 let registerUsername = document.getElementById('inputUsername')
 let registerEmail = document.getElementById('inputEmail')
