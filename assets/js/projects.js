@@ -16,7 +16,7 @@ let projectTasksContainer = document.getElementById('projectTasksContainer')
 let sortOptions = document.getElementById('sortButtonContainer')
 
 
-let currentUser = localStorage.getItem('user')
+let currentUser = localStorage.getItem('user') || false
 
 
 let userTeamArray = [];
@@ -32,8 +32,12 @@ localStorage.setItem('project', projectId);
 
 
 $(document).ready(function () {
-    getProjects();
-    getUsers();
+    if (!currentUser) {
+        window.location.href = '/login.html'
+    } else {
+        getProjects();
+        getUsers();
+    }
 });
 
 
@@ -41,7 +45,7 @@ function addProject() {
     let projectTitle = inputTitle.value;
 
     if (projectTitle.length < 3) {
-        alert('Write something for the title');
+        setMessage('Write something for the title', 'danger');
     } else {
         let newId = makeId();
 
@@ -70,10 +74,10 @@ function saveProject(id) {
         team: userTeamArray,
         archived: false,
         createdBy: currentUser,
-        createdAt: getDate(),
+        createdAt: getDateNow(),
     })
 
-    alert('Saved')
+    setMessage('Successfully saved <a href="/project.html?id=' + id + '"> ' + title + ' </a> project')
     getProjects()
 }
 
@@ -143,7 +147,6 @@ function getProjects(group = false) { // user | team | all
                     }
 
                     buttonGroup += '<button class="btn btn-primary btn-sm m-1" onclick="getProjectTasks(this)" data-project-id="' + project.id + '" data-project-title="' + project.title + '"><i class="bi bi-list-task"></i></button>' +
-
                         '<a href="/project.html?id=' + project.id + '" class="btn btn-primary btn-sm m-1"><i class="bi bi-eye"></i></a>'
 
                     let teamList = ''
@@ -198,9 +201,6 @@ function getProjects(group = false) { // user | team | all
                     '</div>'
             }
             projectList.innerHTML = html
-
-            let addTaskButtonContainer = document.getElementById('addTaskButtonContainer')
-            addTaskButtonContainer.innerHTML = '<button type="button" class="btn btn-primary btn-sm btn-block mt-2">Add a task</button>'
         }
     })
 }
@@ -230,7 +230,7 @@ function getProjectTasks(projectCard) {
 
                     html += '<tr>' +
                         '<th scope="row">' + counter + '</th>' +
-                        '<td>' + task.task + '</td>' +
+                        '<td>' + task.title + '</td>' +
                         '<td>' + task.assignedTo + '</td>' +
                         '<td>' + task.createdBy + '</td>' +
                         '<td>' + task.due + '</td>' +
@@ -246,7 +246,7 @@ function getProjectTasks(projectCard) {
             if (counter == 1) {
                 projectTasksContainer.innerHTML = '<hr><h5>No tasks found for project: <a href="/project.html?id=' + projectId + '">' + projectTitle + '</a></h5><small>No tasks created by you or assigned by you on this project</small><hr><br>'
             } else {
-                projectTasksContainer.innerHTML = '<table class="table">' +
+                projectTasksContainer.innerHTML = '<table class="table table-dark">' +
                     '<thead>' +
                     '<tr>' +
                     '<th scope="col">#</th>' +

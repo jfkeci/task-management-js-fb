@@ -31,7 +31,7 @@
     <title>Task management</title>
 </head>
 
-<body>
+<body class="">
     <div id="header"></div>
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
@@ -41,29 +41,92 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTaskModal">
+                <button type="button" class="btn btn-primary btn-block btn-sm" data-toggle="modal"
+                    data-target="#modalAddTask" id="addTaskButton">
                     Add a task
                 </button>
+                <hr>
+                <div id="tasksSortOptions"></div>
             </div>
             <div class="col-10">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Task</th>
-                            <th scope="col">Created at</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="task-list-table">
-                    </tbody>
-                </table>
+                <ul id="projectslist"></ul>
+
+                <div id="tasksTableContainer"></div>
+                <div id="test"></div>
+            </div>
+        </div>
+
+
+        <div class="modal-container">
+            <div class="modal fade" id="modalAddTask" tabindex="-1" role="dialog" aria-labelledby="modalAddTaskLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalAddTaskLabel">Add a task</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="inputTaskTitle">Title</label>
+                                    <input type="text" id="inputTaskTitle" class="form-control"
+                                        placeholder="Task title">
+                                    <label for="inputTaskDescription">Description</label>
+                                    <textarea class="form-control" id="inputTaskDescription"
+                                        placeholder="What are you going to do?" rows="3"></textarea>
+                                </div>
+                                <hr>
+                                <label for="projectSelect">Project</label>
+                                <div class="input-group">
+                                    <select class="custom-select" id="projectSelect" onchange="renderTeam()">
+                                    </select>
+                                </div>
+                                <label for="userSelect">User</label>
+                                <div class="input-group" id="userSelectContainer">
+                                </div>
+                                <label for="inputTaskDueDate">Due date</label>
+                                <input type="date" id="inputTaskDueDate" class="form-control" name="trip-start"
+                                    value="2021-01-23" min="2021-01-21" max="2025-12-31">
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" id="createTaskBtn" class="btn btn-primary" data-dismiss="modal"
+                                onclick="addTask()">Save Task</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="modalDeleteTask" tabindex="-1" role="dialog"
+                aria-labelledby="modalDeleteTaskLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalDeleteTaskLabel">Delete task</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <h5 id="deleteTaskMessage"></h5>
+                            <input type="hidden" id="deleteModalTaskId">
+                            <input type="hidden" id="deleteModalTaskTitle">
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal"
+                                onclick="deleteTask()">Yes</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
-    <div id="tasks-table-container"></div>
-    <div id="tasks-modal-container"></div>
 
     <br><br>
     <div id="footer"></div>
@@ -71,8 +134,10 @@
 
 
 
+
     <script src="https://www.gstatic.com/firebasejs/8.1.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.1.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.1.0/firebase-auth.js"></script>
     <script src="assets/js/site-boilerplate.js"></script>
     <script src="assets/js/firebase-config.js"></script>
     <script src="assets/js/tasks.js"></script>

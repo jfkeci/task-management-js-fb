@@ -27,3 +27,5 @@ function makeId() {
     }
     return result;
 }
+
+const auth = firebase.auth()

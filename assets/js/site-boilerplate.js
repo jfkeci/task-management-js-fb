@@ -1,15 +1,21 @@
-let loginLinksHtml = '<li class="nav-item active">' +
-    '<a class="nav-link active" href="login.html">Login</a>' +
-    '</li>' +
-    '<li class="nav-item active">' +
-    '<a class="nav-link active" href="register.html">Register</a>' +
-    '</li>';
+let loginLinksHtml = '';
 
 $(document).ready(function () {
-    let user = localStorage.getItem('user')
-    if (user) {
+    let user = localStorage.getItem('user') || false
+    console.log(user)
+    if (!user) {
+        loginLinksHtml = '<li class="nav-item active">' +
+            '<a class="nav-link active" href="login.html">Login</a>' +
+            '</li>' +
+            '<li class="nav-item active">' +
+            '<a class="nav-link active" href="register.html">Register</a>' +
+            '</li>';
+    } else {
         loginLinksHtml = '<li class="nav-item active">' +
             '<a class="nav-link active" href="user.html?id=' + user + '">' + user + '</a>' +
+            '</li>' +
+            '<li class="nav-item active">' +
+            '<a class="nav-link active" onclick="logout()">Logout</a>' +
             '</li>';
     }
     setNavbar();
@@ -88,6 +94,11 @@ function setFooter() {
     el.innerHTML = html;
 }
 
+function logout() {
+    localStorage.removeItem('user')
+    window.location.href = '/login.html'
+}
+
 function setMessage(message, type = false) {
     let alertHtml = ''
 
@@ -112,7 +123,7 @@ function setMessage(message, type = false) {
 
 }
 
-function getDate() {
+function getDateNow() {
     let date = new Date(Date.now());
 
     let day = date.getDate()

@@ -116,7 +116,7 @@ function getTasks(projectId) {
                 if (task.project == projectId) {
                     html += '<tr>' +
                         '<th scope="row">' + counter + '</th>' +
-                        '<td>' + task.task + '</td>' +
+                        '<td>' + task.title + '</td>' +
                         '<td>' + task.createdAt + '</td>' +
                         '<td><a href="/user.html?id=' + task.assignedTo + '">' + task.assignedTo + '</a></td>' +
                         '<td>' + task.due + '</td>' +

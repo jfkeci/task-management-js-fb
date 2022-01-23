@@ -1,78 +1,95 @@
 // Containers
-let tasksModalContainer = document.getElementById('tasks-modal-container') || false
-let tasksTableContainer = document.getElementById('tasks-table-container') || false
+let tasksTableContainer = document.getElementById('tasksTableContainer') || false
+let tasksSortOptions = document.getElementById('tasksSortOptions') || false
 
-// Inputs
-let inputTaskTitle = document.getElementById('input-task-title');
-let inputTaskDescription = document.getElementById('input-task-description');
-let inputTaskDueDate = document.getElementById('input-task-due-date');
-let inputTaskCreatedFor = document.getElementById('input-task-created-for');
+
+let currentUser = localStorage.getItem('user') || false
+
 
 // Tables
 let tasksTable = false;
 
 // Buttons
 let createTaskBtn = null;
-/* 
-createTaskBtn.addEventListener('click', saveTask);
- */
+
+let projectsArray = []
 
 $(document).ready(function () {
-    setModules();
+    const urlParams = new URLSearchParams(window.location.search);
+    const addNewTask = urlParams.get('addtask');
+    const urlProjectId = urlParams.get('project')
+    if (!currentUser) {
+        window.location.href = '/login.html'
+    } else {
+        tasksSortOptions.innerHTML = '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getTasks(\'team\')">Created for you</button>' +
+            '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getTasks(\'user\')">Created by you</button>' +
+            '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getTasks()">All</button>' +
+            '<input type="email" class="form-control m-1" id="searchTasksInput" placeholder="Search tasks">'
+
+
+        if (urlProjectId) {
+            getTasks('project', urlProjectId)
+        } else {
+            getTasks();
+        }
+        getProjects();
+    }
+
+
+
+    if (addNewTask) {
+        $('#addTaskButton').click();
+    }
 });
 
-function saveTask() {
-    let task = inputTask.value;
+function addTask() {
+    let taskTitle = document.getElementById('inputTaskTitle').value
+    let taskDescription = document.getElementById('inputTaskDescription').value
+    let inputProject = document.getElementById('projectSelect').value
+    let inputUser = document.getElementById('userSelect').value
+    let inputTaskDueDate = document.getElementById('inputTaskDueDate').value
 
-    let taskTitle = inputTaskTitle.value
-    let taskDescription = inputTaskDescription.value
-    let taskDueDate = inputTaskDueDate.value
-    let taskCreatedFor = inputTaskCreatedFor.value
+    let newTask = {
+        id: null,
+        title: taskTitle,
+        description: taskDescription,
+        due: inputTaskDueDate,
+        project: inputProject,
+        createdFor: inputUser,
+        createdBy: currentUser,
+        createdAt: getDateNow(),
+        finished: false
+    }
 
-    let createTaskValidate = (
-        task.length > 3 &&
-        taskDescription >= 0 &&
-        taskDueDate != null
-    );
-
-    if (createTaskValidate) {
+    if (taskTitle.length < 3) {
+        alert('Write something for the title');
+    } else {
         let newId = makeId();
 
-        var task_ref = database.ref('tasks/')
-        task_ref.on('value', function (snapshot) {
+        var tasks_ref = database.ref('tasks/')
+        tasks_ref.on('value', function (snapshot) {
             if (snapshot.exists()) {
                 var data = snapshot.val()
-                let tasks = JSON.stringify(data);
-
-
-                let idExists = tasks.some((task) => task.id == newId)
-                while (idExists) {
+                let projects = JSON.stringify(data);
+                while (projects.includes(newId)) {
                     newId = makeId()
-                    idExists = tasks.some((task) => task.id == newId)
                 }
-
-                var task = inputTask.value
-                let date = new Date(Date.now()).toString()
-                let createdAt = date.substr(0, 15)
-                database.ref('tasks/' + id).set({
-                    id: id,
-                    task: task,
-                    createdBy: localStorage.getItem('user'),
-                    createdAt: createdAt,
-                })
-
-                alert('Saved')
-                getTasks()
-
             }
         })
-    } else {
-        alert('Write something!');
+        newTask.id = newId
+        saveTask(newId, newTask);
     }
 }
 
+function saveTask(id, task) {
+    database.ref('tasks/' + id).set(task)
+
+    setMessage('Task ' + task.title + ' successfully saved')
+    getTasks()
+}
+
 /* function _saveTask(id) {
-    var task = inputTask.value
+    let task = inputTask.value
     let date = new Date(Date.now()).toString()
     let createdAt = date.substr(0, 15)
     database.ref('tasks/' + id).set({
@@ -92,14 +109,13 @@ function getComments(taskId) {
 }
 
 function testIt() {
-    var task_ref = database.ref('tasks/')
+    let task_ref = database.ref('tasks/')
     task_ref.on('value', function (snapshot) {
         if (snapshot.exists()) {
-            var data = snapshot.val()
+            let data = snapshot.val()
             let newId = makeId();
             tasks = Object.entries(data).map((e) => e[1])
 
-            console.log(tasks)
         }
     })
 
@@ -107,134 +123,163 @@ function testIt() {
 }
 
 
-function deleteTask(row) {
+function deleteValidation(row) {
     let id = $(row).data("task-id")
-    database.ref('tasks/' + id).remove()
+    let title = $(row).data("task-title")
 
-    alert('deleted')
+    let deleteTaskMessage = document.getElementById('deleteTaskMessage')
+    let deleteModalTaskId = document.getElementById('deleteModalTaskId')
+    let deleteModalTaskTitle = document.getElementById('deleteModalTaskTitle')
+
+    deleteModalTaskId.value = id
+    deleteModalTaskTitle.value = title
+    deleteTaskMessage.innerHTML = 'Are you sure you want to delete task: ' + title
+}
+
+function deleteTask() {
+    let taskId = document.getElementById('deleteModalTaskId').value
+    let taskTitle = document.getElementById('deleteModalTaskTitle').value
+    database.ref('tasks/' + taskId).remove()
+    setMessage('Task "' + taskTitle + '" removed successfully')
     getTasks();
 }
 
-function getTasks(tableContainerId, projectId = false, userId = false) {
-    let tasks = []
 
-    let tableContainer = document.getElementById(tableContainerId)
+async function getProjects() {
+    let projects_ref = database.ref('projects/')
+    await projects_ref.on('value', function (snapshot) {
+        if (snapshot.exists()) {
+            let html = ''
+            let data = snapshot.val()
+            let projects = Object.entries(data).map((e) => e[1])
+            projects.forEach(project => {
+                if (project.team) {
+                    let projectHasUser = project.team.includes(currentUser)
+                    if (projectHasUser || project.createdBy == currentUser) {
+                        projectsArray.push(project)
+                        html += '<option value="' + project.id + '">' + project.title + '</option>'
+                    }
+                }
+            });
+            let projectSelect = document.getElementById('projectSelect')
+            projectSelect.innerHTML = html;
+        }
+        renderTeam();
+    })
+}
 
-    tableContainer.innerHTML = '<table class="table">' +
+
+async function renderTeam() {
+    let selectedProject = document.getElementById('projectSelect').value
+    let userSelectContainer = document.getElementById('userSelectContainer')
+    userSelectContainer.innerHTML = '<select class="custom-select" id="userSelect"></select>'
+    let projects_ref = database.ref('projects/' + selectedProject)
+    await projects_ref.on('value', function (snapshot) {
+        if (snapshot.exists()) {
+            let html = ''
+
+            let project = snapshot.val()
+            project.team.forEach(member => {
+                html += '<option value="' + member + '">' + member + '</option>'
+            });
+
+            let userSelect = document.getElementById('userSelect')
+            userSelect.innerHTML = html;
+        }
+    })
+}
+
+
+async function getTasks(group = null, filter = '') { // user | team | all | search
+    let html = ''
+
+    tasksTableContainer.innerHTML = '<table class="table table-dark" style="max-height: 55vh; height: 50vh; overflow-x:hidden; overflow-y:auto;">' +
         '<thead>' +
         '<tr>' +
-        '<th scope="col"></th>' +
-        '<th scope="col"></th>' +
-        '<th scope="col"></th>' +
+        '<th scope="col">#</th>' +
+        '<th scope="col">Task</th>' +
+        '<th scope="col">For</th>' +
+        '<th scope="col">By</th>' +
+        '<th scope="col">Due</th>' +
+        '<th scope="col">Created at</th>' +
         '<th scope="col"></th>' +
         '</tr>' +
         '</thead>' +
-        '<tbody id="' + tableContainerId + '-table">' +
+        '<tbody id="tasksTable" >' +
         '</tbody>' +
         '</table>';
 
-    let html = ''
+    let tasks_ref = database.ref('tasks/')
+    await tasks_ref.on('value', function (snapshot) {
+        if (snapshot.exists()) {
+            let counter = 1
 
-    let tasksTable = document.getElementById(tableContainerId + '-table') || false
+            let taskCount = 0
 
-    if (tasksTable) {
-        console.log('tasks-table', true)
-    }
+            let filterCondition = false
 
-    /* if (tasksTable) {
-        var task_ref = database.ref('tasks/')
-        task_ref.on('value', function (snapshot) {
-            if (snapshot.exists()) {
-                let loggedInUserId = localStorage.getItem('user')
+            let data = snapshot.val()
 
-                var data = snapshot.val()
-                tasks = Object.entries(data).map((e) => e[1])
-                let counter = 1;
-                tasksTable.innerHTML = ''
-                tasks.forEach(task => {
-                    let condition = false;
-                    if (projectId) {
-                        if (userId) {
-                            //show project tasks from user (userId) assigned by logged in user to the user (userId)
-                            condition = (
-                                task.project == projectId &&
-                                task.createdBy == loggedInUserId &&
-                                task.createdFor == userId
-                            )
-                        } else {
-                            //show project tasks from currenty logged in user and assigned by currently logged in user
-                            condition = (
-                                task.createdBy == loggedInUserId &&
-                                task.createdFor == loggedInUserId
-                            )
-                        }
-                    } else if (userId) {
-                        //show all tasks from user (userId) assigned by currently logged in user
-                        condition = (
-                            task.createdBy == userId &&
-                            task.createdFor == userId
-                        )
-                    } else {
-                        // show all tasks from currently logged in user and tasks assigned by currently logged in user
-                        condition = (
-                            task.createdFor == loggedInUserId
-                        )
+            let tasks = Object.entries(data).map((e) => e[1])
+
+            tasks.forEach(task => {
+
+
+                if (group == 'team') {
+                    filterCondition = task.createdFor == currentUser
+                } else if (group == 'user') {
+                    filterCondition = task.createdBy == currentUser
+                } else if (group == 'search' && filter.length > 0) {
+                    filterCondition = task.title.includes('filter')
+                } else if (group == 'project' && filter) {
+                    filterCondition = task.project == filter
+                } else {
+                    filterCondition = task.createdBy == currentUser || task.createdFor == currentUser
+                }
+
+                if (filterCondition) {
+                    taskCount++
+                    let buttonGroup = ''
+                    if (task.createdBy == currentUser) {
+                        buttonGroup += '<button class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#modalDeleteTask" onclick="deleteValidation(this)" data-task-id="' + task.id + '" data-task-title="' + task.title + '" ><i class="bi bi-trash"></i></button>' +
+                            '<button class="btn btn-primary btn-sm m-1"><i class="bi bi-pencil-square"></i></button>';
                     }
-                    if (condition) {
-                        html += '<tr>' +
-                            '<th scope="row">' + counter + '</th>' +
-                            '<td>' + task.task + '</td>' +
-                            '<td>' + task.createdAt + '</td>' +
-                            '<td><button type="button" class="btn btn-danger" onclick="deleteTask(this)" data-task-id="' + task.id + '">Delete</button></td > ' +
-                            '</tr>'
-                        counter++
-                    }
-                })
-                tasksTable.innerHTML = html
-            } else {
-                tasksTable.innerHTML = 'No tasks found'
+
+                    buttonGroup += '<button class="btn btn-success btn-sm m-1" onclick="getProjectTasks(this)" data-project-id="' + task.id + '" data-project-title="' + task.title + '"><i class="bi bi-check"></i></button>'
+
+                    html += '<tr>' +
+                        '<th scope="row">' + counter + '</th>' +
+                        '<td>' + task.title + '</td>' +
+                        '<td>' + getProjectTitle(task.project) + '</td>' +
+                        '<td>' + task.createdFor + '</td>' +
+                        '<td>' + task.createdBy + '</td>' +
+                        '<td>' + task.due + '</td>' +
+                        '<td>' + task.createdAt + '</td>' +
+                        '<td>' +
+                        buttonGroup +
+                        '</td>' +
+                        '<!--<td><button type="button" class="btn btn-danger" onclick="deleteTask(this)" data-task-id="' + task.id + '">Delete</button></td > -->' +
+                        '</tr>'
+                    counter++
+                }
+            });
+
+            if (taskCount == 0) {
+                console.log('we are here')
+                tasksTableContainer.innerHTML = '<hr>No tasks found for user ' + currentUser + '<hr>'
             }
-        })
-    } else {
-        console.log('No element found with "' + tableId + '" id ')
-    } */
 
+            let tasksTable = document.getElementById('tasksTable')
+            tasksTable.innerHTML = html
+        }
+    })
 }
 
-function setModules() {
-    if (tasksModalContainer) {
-        tasksModalContainer.innerHTML = '<div class="modal fade" id="addTaskModal" tabindex="-1" role="dialog" aria-hidden="true">' +
-            '<div class="modal-dialog" role="document">' +
-            '<div class="modal-content">' +
-            '<div class="modal-header">' +
-            '<h5 class="modal-title" id="addTaskModalLabel">Add a task</h5>' +
-            '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
-            '<span aria-hidden="true">&times;</span>' +
-            '</button>' +
-            '</div>' +
-            '<div class="modal-body">' +
-            '<form>' +
-            '<div class="form-group">' +
-            '<label>Task content</label>' +
-            '<input type="text" id="inputTask" value="some text here" class="form-control" placeholder="What is your task?">' +
-            '</div>' +
-            '</form>' +
-            '</div>' +
-            '<div class="modal-footer">' +
-            '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>' +
-            '<button type="button" id="createTaskBtn" class="btn btn-primary">Save Task</button>' +
-            '</div>' +
-            '</div>' +
-            '</div>' +
-            '</div>';
-    }
+function getProjectTitle(projectId) {
+    let title = false
 
-    if (tasksTableContainer) {
-        tasksTableContainer.innerHTML = '';
-
-        tasksTable = document.getElementById('task-list-table')
-
-        getTasks();
-    }
-
+    let test = document.getElementById('test');
+    test.innerHTML = '<pre>' + JSON.stringify(projectsArray) + '</pre>'
 }
+
+
