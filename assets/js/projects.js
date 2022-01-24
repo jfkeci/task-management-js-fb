@@ -217,6 +217,9 @@ function editProject(card) {
     let inputUpdateTitle = document.getElementById('inputUpdateTitle')
     let inputUpdateDescription = document.getElementById('inputUpdateDescription')
 
+    let inputId = document.getElementById('projectIdForUpdate')
+    inputId.value = projectId;
+
     var project_ref = database.ref('projects/' + projectId)
     project_ref.on('value', function (snapshot) {
         if (snapshot.exists()) {
@@ -249,6 +252,29 @@ function editProject(card) {
             updateProjectTeamList.innerHTML = updateTeamListHtml
             let editUserSelect = document.getElementById('editUserSelect')
             editUserSelect.innerHTML = userSelectHtml */
+        }
+    })
+}
+
+
+function updateProject() {
+    let inputUpdateTitle = document.getElementById('inputUpdateTitle')
+    let inputUpdateDescription = document.getElementById('inputUpdateDescription')
+    let inputId = document.getElementById('projectIdForUpdate')
+
+    let projectId = inputId.value
+    let title = inputUpdateTitle.value
+    let description = inputUpdateDescription.value
+
+    let project_ref = database.ref('projects/' + projectId)
+    project_ref.on('value', function (snapshot) {
+        if (snapshot.exists()) {
+            let project = snapshot.val()
+            project.title = title
+            project.description = description
+
+            database.ref('projects/' + project.id).set(project)
+            getProjects()
         }
     })
 }

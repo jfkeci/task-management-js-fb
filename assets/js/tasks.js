@@ -24,7 +24,7 @@ $(document).ready(function () {
         tasksSortOptions.innerHTML = '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getTasks(\'team\')">Created for you</button>' +
             '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getTasks(\'user\')">Created by you</button>' +
             '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getTasks()">All</button>' +
-            '<input type="email" class="form-control m-1" id="searchTasksInput" placeholder="Search tasks">'
+            '<!--input type="email" class="form-control m-1" id="searchTasksInput" placeholder="Search tasks">-->'
 
 
         if (urlProjectId) {
@@ -177,18 +177,49 @@ function getCheckedTasks() {
     })
 }
 
-function testIt() {
-    let task_ref = database.ref('tasks/')
+function editTask(card) {
+    let taskId = $(card).data("task")
+
+    console.log('id', taskId)
+
+    let inputUpdateTitle = document.getElementById('inputUpdateTitle')
+    let inputUpdateDescription = document.getElementById('inputUpdateDescription')
+
+    let inputId = document.getElementById('taskIdForUpdate')
+    inputId.value = taskId;
+
+    var task_ref = database.ref('tasks/' + taskId)
     task_ref.on('value', function (snapshot) {
         if (snapshot.exists()) {
-            let data = snapshot.val()
-            let newId = makeId();
-            tasks = Object.entries(data).map((e) => e[1])
+            var data = snapshot.val()
+            inputUpdateTitle.value = data.title
+            inputUpdateDescription.value = data.description
 
         }
     })
+}
 
-    setModules();
+
+function updateTask() {
+    let inputUpdateTitle = document.getElementById('inputUpdateTitle')
+    let inputUpdateDescription = document.getElementById('inputUpdateDescription')
+    let inputId = document.getElementById('taskIdForUpdate')
+
+    let taskId = inputId.value
+    let title = inputUpdateTitle.value
+    let description = inputUpdateDescription.value
+
+    let task_ref = database.ref('tasks/' + taskId)
+    task_ref.on('value', function (snapshot) {
+        if (snapshot.exists()) {
+            let task = snapshot.val()
+            task.title = title
+            task.description = description
+
+            database.ref('tasks/' + task.id).set(task)
+            getTasks()
+        }
+    })
 }
 
 
@@ -305,12 +336,11 @@ async function getTasks(group = null, filter = '') { // user | team | all | sear
                 }
 
                 if (filterCondition) {
-                    console.log(task.finished)
                     taskCount++
                     let buttonGroup = ''
                     if (task.createdBy == currentUser) {
                         buttonGroup += '<button class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#modalDeleteTask" onclick="deleteValidation(this)" data-task-id="' + task.id + '" data-task-title="' + task.title + '" ><i class="bi bi-trash"></i></button>' +
-                            '<button class="btn btn-primary btn-sm m-1"><i class="bi bi-pencil-square"></i></button>';
+                            '<button class="btn btn-primary btn-sm m-1"><i class="bi bi-pencil-square" onclick="editTask(this)" data-task="' + task.id + '" data-toggle="modal" data-target="#modalUpdateTask"></i></button>';
                     }
 
                     buttonGroup += '<button class="btn btn-success btn-sm m-1"  data-task="' + task.id + '" onclick="checkTask(this)"><i class="bi bi-check"></i></button>'
@@ -332,7 +362,6 @@ async function getTasks(group = null, filter = '') { // user | team | all | sear
             });
 
             if (taskCount == 0) {
-                console.log('we are here')
                 tasksTableContainer.innerHTML = '<hr>No tasks found for user ' + currentUser + '<hr>'
             }
 
