@@ -1,5 +1,6 @@
 let loginLinksHtml = '';
 
+
 $(document).ready(function () {
     let user = localStorage.getItem('user') || false
     console.log(user)
@@ -30,9 +31,6 @@ function setNavbar() {
         '</button>' +
         '<div class="collapse navbar-collapse" id="taskerNavbar">' +
         '<ul class="navbar-nav mr-auto">' +
-        '<li class="nav-item active">' +
-        '<a class="nav-link active" href="index.html">Home </a>' +
-        '</li>' +
         '<li class="nav-item active">' +
         '<a class="nav-link active" href="about.html">About</a>' +
         '</li>' +

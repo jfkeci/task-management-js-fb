@@ -32,7 +32,7 @@ function login() {
                         username = user.username
                     }
 
-                    if (user.email == email && data.password == password) {
+                    if (user.email == email && user.password == password) {
                         canlogin = true
                     }
                 });

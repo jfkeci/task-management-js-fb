@@ -50,6 +50,8 @@ function register() {
                     email: email,
                     password: password,
                 })
+                setMessage('Registered successfully!')
+                window.location.href = '/projects.html'
                 console.log('success')
             }).catch((err) => {
                 console.log(err.message)
