@@ -34,6 +34,12 @@
             overflow-y: auto;
             overflow-x: hidden;
         }
+
+        .tasks-table {
+            height: 50vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
     </style>
 
     <title>Task management</title>
@@ -63,39 +69,47 @@
                     </a>
                 </div>
                 <hr>
+                <input type="text" id="inputProjectSearch" class="form-control ml-1" placeholder="Search"
+                    oninput="searchProjects()">
                 <div id="sortButtonContainer">
 
                 </div>
                 <hr>
             </div>
-            <div id="projectList" class="projects" class="col-sm m-3">
+            <div id="projectList" class="projects" class="col-sm m-4">
             </div>
-            <div class="col-sm mt-3 ml-3 mr-3" id="projectTasksContainer">
+            <div class="col-sm m-3 tasks-table" id="projectTasksContainer">
                 <hr>
-                <h5>Preview project tasks</h5>
-                <p>Press this button</p>
-                <button class="btn btn-primary btn-sm m-1">
-                    <i class="bi bi-list-task"></i>
-                </button>
-                <hr>
-                <h5>View the project</h5>
-                <p>Press this button</p>
-                <button class="btn btn-primary btn-sm m-1">
-                    <i class="bi bi-eye"></i>
-                </button>
-                <hr>
-                <h5>Edit the project</h5>
-                <p>Press this button</p>
-                <button class="btn btn-primary btn-sm m-1">
-                    <i class="bi bi-pencil-square"></i>
-                </button>
-                <hr>
-                <h5>Delete the project</h5>
-                <p>Press this button</p>
-                <button class="btn btn-danger btn-sm m-1">
-                    <i class="bi bi-trash"></i>
-                </button>
-                <hr>
+                <div class="row">
+                    <div class="col">
+                        <h5>Preview project tasks</h5>
+                        <p>Press this button</p>
+                        <button class="btn btn-primary btn-sm m-1">
+                            <i class="bi bi-list-task"></i>
+                        </button>
+                        <hr>
+                        <h5>View the project</h5>
+                        <p>Press this button</p>
+                        <button class="btn btn-primary btn-sm m-1">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <hr>
+                    </div>
+                    <div class="col">
+                        <h5>Edit the project</h5>
+                        <p>Press this button</p>
+                        <button class="btn btn-primary btn-sm m-1">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                        <hr>
+                        <h5>Delete the project</h5>
+                        <p>Press this button</p>
+                        <button class="btn btn-danger btn-sm m-1">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                        <hr>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

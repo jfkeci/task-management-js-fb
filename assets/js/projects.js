@@ -103,7 +103,7 @@ function deleteProject() {
 }
 
 
-function getProjects(group = false) { // user | team | all
+function getProjects(group = false, filter = null) { // user | team | all
     let projects = []
 
     sortOptions.innerHTML = '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getProjects(\'team\')">Team</button>' +
@@ -133,6 +133,9 @@ function getProjects(group = false) { // user | team | all
                     filterCondition = team.includes(currentUser) && !project.archived
                 } else if (group == 'archived') {
                     filterCondition = (team.includes(currentUser) || project.createdBy == currentUser) && project.archived
+                } else if (group == 'search') {
+                    let title = project.title.toLowerCase()
+                    filterCondition = (team.includes(currentUser) || project.createdBy == currentUser) && title.includes(filter)
                 } else {
                     filterCondition = (team.includes(currentUser) || project.createdBy == currentUser) && !project.archived
                 }
@@ -257,6 +260,13 @@ function editProject(card) {
 }
 
 
+function searchProjects() {
+    let inputProjectSearch = document.getElementById('inputProjectSearch')
+    let filter = inputProjectSearch.value;
+    getProjects('search', filter.toLowerCase())
+}
+
+
 function updateProject() {
     let inputUpdateTitle = document.getElementById('inputUpdateTitle')
     let inputUpdateDescription = document.getElementById('inputUpdateDescription')
@@ -299,7 +309,7 @@ function getProjectTasks(projectCard) {
     let projectTitle = $(projectCard).data("project-title")
 
     let tasks = []
-    let html = ''
+    let html = '<style>.</style>'
     var task_ref = database.ref('tasks/')
     task_ref.on('value', function (snapshot) {
         if (snapshot.exists()) {
@@ -312,7 +322,7 @@ function getProjectTasks(projectCard) {
                         '<button type="button" class="btn btn-danger btn-sm m-1" data-task-id="' + task.id + '"><i class="bi bi-trash"></i></button>'
 
                     if (task.createdFor == currentUser) {
-                        buttonGroup += '<button type="button" class="btn btn-danger btn-sm m-1" data-task-id="' + task.id + '"><i class="bi bi-chech"></i></button>'
+                        buttonGroup += '<button type="button" class="btn btn-success btn-sm m-1" data-task-id="' + task.id + '"><i class="bi bi-check"></i></button>'
                     }
 
                     html += '<tr>' +

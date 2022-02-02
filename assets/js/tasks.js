@@ -23,8 +23,7 @@ $(document).ready(function () {
     } else {
         tasksSortOptions.innerHTML = '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getTasks(\'team\')">Created for you</button>' +
             '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getTasks(\'user\')">Created by you</button>' +
-            '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getTasks()">All</button>' +
-            '<!--input type="email" class="form-control m-1" id="searchTasksInput" placeholder="Search tasks">-->'
+            '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getTasks()">All</button>'
 
 
         if (urlProjectId) {
@@ -129,7 +128,7 @@ function getComments(taskId) {
 function getCheckedTasks() {
     let checkedTasksTableContainer = document.getElementById('checkedTasksTableContainer')
 
-    checkedTasksTableContainer.innerHTML = '<h5>Finished tasks</h5><table class="table table-dark" style="max-height: 55vh; height: 50vh; overflow-x:hidden; overflow-y:auto;">' +
+    checkedTasksTableContainer.innerHTML = '<h5>Finished tasks</h5><table class="table table-dark">' +
         '<thead>' +
         '<tr>' +
         '<th scope="col">#</th>' +
@@ -141,7 +140,7 @@ function getCheckedTasks() {
         '<th scope="col"></th>' +
         '</tr>' +
         '</thead>' +
-        '<tbody id="checkedTasksTable" >' +
+        '<tbody id="checkedTasksTable">' +
         '</tbody>' +
         '</table>';
     let tasks_ref = database.ref('tasks/')
@@ -220,6 +219,13 @@ function updateTask() {
             getTasks()
         }
     })
+}
+
+
+function searchTasks() {
+    let inputTaskSearch = document.getElementById('inputTaskSearch')
+    let filter = inputTaskSearch.value;
+    getTasks('search', filter.toLowerCase())
 }
 
 
@@ -327,8 +333,9 @@ async function getTasks(group = null, filter = '') { // user | team | all | sear
                     filterCondition = task.createdFor == currentUser && !task.finished
                 } else if (group == 'user') {
                     filterCondition = task.createdBy == currentUser && !task.finished
-                } else if (group == 'search' && filter.length > 0) {
-                    filterCondition = task.title.includes('filter') && !task.finished
+                } else if (group == 'search') {
+                    let title = task.title.toLowerCase();
+                    filterCondition = title.includes(filter) && !task.finished && (task.createdBy == currentUser || task.createdFor == currentUser)
                 } else if (group == 'project' && filter) {
                     filterCondition = task.project == filter && !task.finished
                 } else {
@@ -365,8 +372,12 @@ async function getTasks(group = null, filter = '') { // user | team | all | sear
                 tasksTableContainer.innerHTML = '<hr>No tasks found for user ' + currentUser + '<hr>'
             }
 
-            let tasksTable = document.getElementById('tasksTable')
-            tasksTable.innerHTML = html
+            let tasksTable = document.getElementById('tasksTable') || false
+            if (tasksTable) {
+                tasksTable.innerHTML = html
+            } else {
+                tasksTableContainer.innerHTML = '<hr>No tasks found for user ' + currentUser + '<hr>'
+            }
         }
     })
 }
