@@ -33,7 +33,7 @@
         }
     </style>
 
-    <title>Task management</title>
+    <title>Tasker</title>
 </head>
 
 <body>
@@ -44,21 +44,33 @@
         </div>
     </div>
     <div class="container">
-        <div class="card" id="userCard">
+        <div class="card mt-3 mb-3" id="userCard">
 
         </div>
+    </div>
+    <div class="container mt-3 mb-3" id="projectTitle">
 
-        <div id="profileTitle">
-
+    </div>
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-2">
+            <div id="controlsContainer">
+                <a href="/projects.html?addProject=true" class="btn btn-primary btn-block btn-sm m-1">Add a project</a>
+                <a href="/tasks.html?addTask=true" class="btn btn-primary btn-block btn-sm m-1">Add a task</a>
+                <hr>
+                <input type="text" id="inputProjectSearch" class="form-control ml-1" placeholder="Search"
+                    oninput="searchProjects()">
+            </div>
+            <div id="projectFilterContainer"></div>
         </div>
-
-        <div class="row">
-            <div class="col">
-                <table class="table table-dark">
+        <div class="col">
+            <div style="height: 50vh; overflow-y: auto; overflow-x: hideen;" id="projectsTable">
+                <table class="table table-dark mt-3">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Title</th>
+                            <th scope="col">Created By</th>
                             <th scope="col">Created At</th>
                         </tr>
                     </thead>
@@ -66,9 +78,43 @@
                     </tbody>
                 </table>
             </div>
-            <!-- <div class="col"></div> -->
         </div>
+        <div class="col-2"></div>
     </div>
+
+    <div class="container mt-3 mb-3" id="taskTitle">
+        dada
+    </div>
+
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-2">
+            <div id="controlsContainer">
+                <hr>
+                <input type="text" id="inputProjectSearch" class="form-control ml-1" placeholder="Search"
+                    oninput="searchProjects()">
+            </div>
+            <div id="projectFilterContainer"></div>
+        </div>
+        <div class="col">
+            <div style="height: 50vh; overflow-y: auto; overflow-x: hideen;" id="tasksTable">
+                <table class="table table-dark mt-3">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Created At</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTasksList">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-2"></div>
+    </div>
+
+
 
     </div>
 

@@ -21,8 +21,8 @@ $(document).ready(function () {
     if (!currentUser) {
         window.location.href = '/login.html'
     } else {
-        tasksSortOptions.innerHTML = '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getTasks(\'team\')">Created for you</button>' +
-            '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getTasks(\'user\')">Created by you</button>' +
+        tasksSortOptions.innerHTML = '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getTasks(\'created_for_you\')">Created for you</button>' +
+            '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getTasks(\'created_by_you\')">Created by you</button>' +
             '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getTasks()">All</button>'
 
 
@@ -329,9 +329,9 @@ async function getTasks(group = null, filter = '') { // user | team | all | sear
             let tasks = Object.entries(data).map((e) => e[1])
 
             tasks.forEach(task => {
-                if (group == 'team') {
+                if (group == 'created_for_you') {
                     filterCondition = task.createdFor == currentUser && !task.finished
-                } else if (group == 'user') {
+                } else if (group == 'created_by_you') {
                     filterCondition = task.createdBy == currentUser && !task.finished
                 } else if (group == 'search') {
                     let title = task.title.toLowerCase();

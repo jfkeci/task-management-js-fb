@@ -16,26 +16,30 @@ firebase.initializeApp(firebaseConfig);
 var database = firebase.database()
 
 let userProjectsList = document.getElementById('userProjectsList');
-let titleEl = document.getElementById('profileTitle');
+
+let projectTitleEl = document.getElementById('projectTitle');
+let taskTitleEl = document.getElementById('taskTitle');
 
 let userCard = document.getElementById('userCard')
+
+let currentUser = localStorage.getItem('user')
+
+let userProfile = null
 
 
 $(document).ready(function () {
     const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get('id');
 
-    if (!userId) {
+    userProfile = urlParams.get('id')
+
+    if (!userProfile) {
         window.location.href = '/projects.html'
     } else {
-        localStorage.setItem('profile', userId)
 
-        let title = '<h4 class="m-2">Projects assigned by you to ' + userId + '</h4>'
+        projectTitleEl.innerHTML = '<h4 class="m-2">Projects: ' + userProfile + '</h4>'
+        taskTitleEl.innerHTML = '<h4 class="m-2">Tasks: ' + userProfile + '</h4>'
 
-        titleEl.innerHTML = title;
-
-
-        var user_ref = database.ref('users/' + userId)
+        var user_ref = database.ref('users/' + userProfile)
         user_ref.on('value', function (snapshot) {
             if (snapshot.exists()) {
                 let user = snapshot.val()
@@ -50,11 +54,26 @@ $(document).ready(function () {
             }
         })
 
-        getProjects(userId)
+        getProjects()
     }
 });
 
-async function getProjects(userId) {
+async function getProjects(group = null, filter = null) {
+    userProjectsList.innerHTML = ''
+    let filterContainer = document.getElementById('projectFilterContainer')
+    let controlsContainer = document.getElementById('controlsContainer')
+
+    if (userProfile != currentUser) {
+        controlsContainer.innerHTML = ''
+    }
+
+    filterContainer.innerHTML =
+        '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getProjects(\'created_with_you\')">Created With you</button>' +
+        '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getProjects(\'created_by_you\')">Created by you</button>' +
+        '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getProjects(\'\')">All</button>' +
+        '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getProjects(\'archived\')">Archived</button>';
+
+
     let projects = []
     let html = ''
     var projects_ref = database.ref('projects/')
@@ -65,10 +84,59 @@ async function getProjects(userId) {
             let counter = 1;
             userProjectsList.innerHTML = ''
             projects.forEach(project => {
-                if (localStorage.getItem('user') == project.createdBy && project.team.includes(userId)) {
+
+                let filterCondition = false
+
+                switch (group) {
+                    case 'created_by_you':
+                        filterCondition = (
+                            (project.createdBy = currentUser ||
+                                project.team.includes(userProfile)) &&
+                            !project.archived
+                        )
+                        break;
+                    case 'created_with_you':
+                        filterCondition = (
+                            project.team.includes(currentUser) &&
+                            !project.archived
+                        )
+                        break;
+                    case 'archived':
+                        filterCondition = (
+                            (project.createdBy = userProfile ||
+                                project.team.includes(currentUser)) &&
+                            (project.createdBy = currentUser ||
+                                project.team.includes(userProfile)) &&
+                            project.archived
+                        )
+                        break;
+                    case 'search':
+                        let title = project.title.toLowerCase()
+                        filterCondition = (
+                            (project.createdBy = userProfile ||
+                                project.team.includes(currentUser)) &&
+                            (project.createdBy = currentUser ||
+                                project.team.includes(userProfile)) &&
+                            title.includes(filter.toLowerCase()) &&
+                            !project.archived
+                        )
+                        break;
+                    default:
+                        filterCondition = (
+                            (project.createdBy = userProfile ||
+                                project.team.includes(currentUser)) &&
+                            (project.createdBy = currentUser ||
+                                project.team.includes(userProfile)) &&
+                            !project.archived
+                        )
+                        break;
+                }
+
+                if (filterCondition) {
                     html += '<tr>' +
                         '<th scope="row">' + counter + '</th>' +
                         '<td><a href="/project.html?id=' + project.id + '">' + project.title + '</a></td>' +
+                        '<td><a href="/user.html?id=' + project.createdBy + '">' + project.createdBy + '</a></td>' +
                         '<td>' + project.createdAt + '</td>' +
                         '</tr>'
                     counter++
@@ -82,6 +150,17 @@ async function getProjects(userId) {
     })
 }
 
+function searchProjects() {
+    let inputProjectSearch = document.getElementById('inputProjectSearch')
+    let filter = inputProjectSearch.value;
+    getProjects('search', filter.toLowerCase())
+}
+
+function searchTasks() {
+    let inputTasksSearch = document.getElementById('inputTasksSearch')
+    let filter = inputTasksSearch.value;
+    getProjects('search', filter.toLowerCase())
+}
 function getTasks(userId) {
     console.log(userId)
 }

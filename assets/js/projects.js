@@ -115,8 +115,8 @@ function deleteProject() {
 function getProjects(group = false, filter = null) { // user | team | all
     let projects = []
 
-    sortOptions.innerHTML = '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getProjects(\'team\')">Team</button>' +
-        '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getProjects(\'user\')">Created by you</button>' +
+    sortOptions.innerHTML = '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getProjects(\'created_for_you\')">Created For you</button>' +
+        '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getProjects(\'created_by_you\')">Created by you</button>' +
         '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getProjects()">All</button>' +
         '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getProjects(\'archived\')">Archived</button>'
 
@@ -136,27 +136,48 @@ function getProjects(group = false, filter = null) { // user | team | all
 
                 let filterCondition = false
 
-                if (group == 'user') {
-                    filterCondition = project.createdBy == currentUser && !project.archived
-                } else if (group == 'team') {
-                    filterCondition = team.includes(currentUser) && !project.archived
+                if (group == 'created_by_you') {
+                    filterCondition = (
+                        project.createdBy == currentUser &&
+                        !project.archived
+                    )
+                } else if (group == 'created_for_you') {
+                    filterCondition = (
+                        team.includes(currentUser) &&
+                        !project.archived
+                    )
                 } else if (group == 'archived') {
-                    filterCondition = (team.includes(currentUser) || project.createdBy == currentUser) && project.archived
+                    filterCondition = (
+                        (project.createdBy == currentUser || team.includes(currentUser)) &&
+                        project.archived
+                    )
                 } else if (group == 'search') {
                     let title = project.title.toLowerCase()
-                    filterCondition = (team.includes(currentUser) || project.createdBy == currentUser) && title.includes(filter)
+                    filterCondition = (
+                        (project.createdBy == currentUser || team.includes(currentUser)) &&
+                        title.includes(filter)
+                    )
                 } else {
-                    filterCondition = (team.includes(currentUser) || project.createdBy == currentUser) && !project.archived
+                    filterCondition = (
+                        (project.createdBy == currentUser || team.includes(currentUser)) &&
+                        !project.archived
+                    )
                 }
 
                 if (filterCondition) {
+
+                    let archiveButton = '<button class="btn btn-primary btn-sm m-1" onclick="archiveProject(this)" data-project="' + project.id + '"><i class="bi bi-archive"></i></button>';
+
+                    if (project.archived) {
+                        archiveButton = '<button class="btn btn-danger btn-sm m-1" onclick="unarchiveProject(this)" data-project="' + project.id + '"><i class="bi bi-archive"></i></button>';
+                    }
 
                     let buttonGroup = ''
 
                     if (project.createdBy == currentUser) {
                         buttonGroup += '<button class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#modalDeleteProject" onclick="deleteValidation(this)" data-project-id="' + project.id + '" data-project-title="' + project.title + '" ><i class="bi bi-trash"></i></button>' +
                             '<button class="btn btn-primary btn-sm m-1" onclick="editProject(this)" data-project="' + project.id + '" data-toggle="modal" data-target="#modalUpdateProject"><i class="bi bi-pencil-square"></i></button>' +
-                            '<button class="btn btn-primary btn-sm m-1" onclick="archiveProject(this)" data-project="' + project.id + '"><i class="bi bi-archive"></i></button>';
+                            archiveButton;
                     }
 
                     buttonGroup += '<button class="btn btn-primary btn-sm m-1" onclick="getProjectTasks(this)" data-project-id="' + project.id + '" data-project-title="' + project.title + '"><i class="bi bi-list-task"></i></button>' +
@@ -305,6 +326,20 @@ function archiveProject(card) {
         if (snapshot.exists()) {
             let project = snapshot.val()
             project.archived = true
+
+            database.ref('projects/' + project.id).set(project)
+            getProjects()
+        }
+    })
+}
+
+function unarchiveProject(card) {
+    let projectId = $(card).data("project")
+    var project_ref = database.ref('projects/' + projectId)
+    project_ref.on('value', function (snapshot) {
+        if (snapshot.exists()) {
+            let project = snapshot.val()
+            project.archived = false
 
             database.ref('projects/' + project.id).set(project)
             getProjects()
