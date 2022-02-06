@@ -66,7 +66,6 @@ async function getProjects(userId) {
             userProjectsList.innerHTML = ''
             projects.forEach(project => {
                 if (localStorage.getItem('user') == project.createdBy && project.team.includes(userId)) {
-                    console.log(project.id)
                     html += '<tr>' +
                         '<th scope="row">' + counter + '</th>' +
                         '<td><a href="/project.html?id=' + project.id + '">' + project.title + '</a></td>' +

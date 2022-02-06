@@ -25,9 +25,9 @@ let updateTeamArray = [];
 let projectsArray = null
 let tasksArray = null
 
-
 const urlParams = new URLSearchParams(window.location.search);
 const projectId = urlParams.get('project');
+const addingNewProject = JSON.parse(urlParams.get('addProject'))
 localStorage.setItem('project', projectId);
 
 
@@ -35,6 +35,10 @@ $(document).ready(function () {
     if (!currentUser) {
         window.location.href = '/login.html'
     } else {
+        if (addingNewProject) {
+            let toggleModalAddProjectBtn = document.getElementById('toggleModalAddProject')
+            toggleModalAddProjectBtn.click()
+        }
         getProjects();
         getUsers();
     }
@@ -46,6 +50,8 @@ function addProject() {
 
     if (projectTitle.length < 3) {
         setMessage('Write something for the title', 'danger');
+    } else if (userTeamArray.length == 0) {
+        setMessage('You have to add at least one team member to the project', 'danger')
     } else {
         let newId = makeId();
 
@@ -98,6 +104,9 @@ function deleteProject() {
     let projectId = document.getElementById('deleteModalProjectId').value
     let projectTitle = document.getElementById('deleteModalProjectTitle').value
     database.ref('projects/' + projectId).remove()
+
+
+
     setMessage('Project "' + projectTitle + '" removed successfully')
     getProjects();
 }

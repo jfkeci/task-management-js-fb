@@ -42,8 +42,6 @@ function login() {
                     if (canlogin) {
                         localStorage.setItem('user', username)
                         window.location.href = '/projects.html'
-                        console.log('logged in via firebase')
-
                     } else {
                         tryAgain('Incorrect data');
                     }

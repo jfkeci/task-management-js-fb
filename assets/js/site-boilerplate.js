@@ -3,20 +3,19 @@ let loginLinksHtml = '';
 
 $(document).ready(function () {
     let user = localStorage.getItem('user') || false
-    console.log(user)
     if (!user) {
         loginLinksHtml = '<li class="nav-item active">' +
-            '<a class="nav-link active" href="login.html">Login</a>' +
+            '<a class="nav-link nav-route-link active" href="login.html">Login</a>' +
             '</li>' +
             '<li class="nav-item active">' +
-            '<a class="nav-link active" href="register.html">Register</a>' +
+            '<a class="nav-link nav-route-link active" href="register.html">Register</a>' +
             '</li>';
     } else {
         loginLinksHtml = '<li class="nav-item active">' +
-            '<a class="nav-link active" href="user.html?id=' + user + '">' + user + '</a>' +
+            '<a class="nav-link nav-route-link active" href="user.html?id=' + user + '">' + user + '</a>' +
             '</li>' +
             '<li class="nav-item active">' +
-            '<a class="nav-link active" onclick="logout()">Logout</a>' +
+            '<a class="nav-link nav-route-link active" style="cursor:pointer;" onclick="logout()">Logout</a>' +
             '</li>';
     }
     setNavbar();
@@ -26,19 +25,19 @@ $(document).ready(function () {
 function setNavbar() {
     let el = document.getElementById('header');
     let html = '<nav class="navbar navbar-expand-lg navbar-dark bg-dark">' +
-        '<a class="navbar-brand" href="/projects.html">Tasker</a>' +
+        '<a class="navbar-brand nav-route-link" href="/projects.html">Tasker</a>' +
         '<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#taskerNavbar" aria-controls="taskerNavbar" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span>' +
         '</button>' +
         '<div class="collapse navbar-collapse" id="taskerNavbar">' +
         '<ul class="navbar-nav mr-auto">' +
         '<li class="nav-item active">' +
-        '<a class="nav-link active" href="about.html">About</a>' +
+        '<a class="nav-link nav-route-link active" href="about.html">About</a>' +
         '</li>' +
         '<li class="nav-item active">' +
-        '<a class="nav-link active" href="tasks.html">Tasks </a>' +
+        '<a class="nav-link nav-route-link active" href="tasks.html">Tasks </a>' +
         '</li>' +
         '<li class="nav-item active">' +
-        '<a class="nav-link active" href="projects.html">Projects</a>' +
+        '<a class="nav-link nav-route-link active" href="projects.html">Projects</a>' +
         '</li>' +
         '</ul>' +
         '<form class="form-inline my-2 my-lg-0">' +

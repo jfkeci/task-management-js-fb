@@ -49,21 +49,21 @@ function addTask() {
     let inputUser = document.getElementById('userSelect').value
     let inputTaskDueDate = document.getElementById('inputTaskDueDate').value
 
-    let newTask = {
-        id: null,
-        title: taskTitle,
-        description: taskDescription,
-        due: inputTaskDueDate,
-        project: inputProject,
-        createdFor: inputUser,
-        createdBy: currentUser,
-        createdAt: getDateNow(),
-        finished: false
-    }
-
     if (taskTitle.length < 3) {
-        alert('Write something for the title');
+        setMessage('Write something for the title', 'danger')
     } else {
+        let newTask = {
+            id: null,
+            title: taskTitle,
+            description: taskDescription,
+            due: inputTaskDueDate,
+            project: inputProject,
+            createdFor: inputUser,
+            createdBy: currentUser,
+            createdAt: getDateNow(),
+            finished: false
+        }
+
         let newId = makeId();
 
         var tasks_ref = database.ref('tasks/')
