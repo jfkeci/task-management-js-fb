@@ -262,7 +262,7 @@ function editProject(card) {
 
 
 
-            /* database.ref('users/').on('value', function (userSnapshot) {
+            database.ref('users/').on('value', function (userSnapshot) {
                 if (userSnapshot.exists()) {
                     let userData = userSnapshot.val()
                     users = Object.entries(userData).map((e) => e[1])
@@ -284,7 +284,7 @@ function editProject(card) {
             let updateProjectTeamList = document.getElementById('updateUsersList')
             updateProjectTeamList.innerHTML = updateTeamListHtml
             let editUserSelect = document.getElementById('editUserSelect')
-            editUserSelect.innerHTML = userSelectHtml */
+            editUserSelect.innerHTML = userSelectHtml
         }
     })
 }

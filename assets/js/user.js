@@ -16,6 +16,7 @@ firebase.initializeApp(firebaseConfig);
 var database = firebase.database()
 
 let userProjectsList = document.getElementById('userProjectsList');
+let userTasksList = document.getElementById('userTasksList');
 
 let projectTitleEl = document.getElementById('projectTitle');
 let taskTitleEl = document.getElementById('taskTitle');
@@ -146,6 +147,90 @@ async function getProjects(group = null, filter = null) {
             userProjectsList.innerHTML = html
         } else {
             userProjectsList.innerHTML = 'No projects found'
+        }
+    })
+}
+
+async function getTasks(group = null, filter = null) {
+    userTasksList.innerHTML = ''
+    let filterContainer = document.getElementById('tasksFilterContainer')
+
+    filterContainer.innerHTML =
+        '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getTasks(\'created_for_you\')">Created For you</button>' +
+        '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getTasks(\'created_by_you\')">Created by you</button>' +
+        '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getTasks(\'\')">All</button>' +
+        '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getTasks(\'finished\')">Archived</button>';
+
+
+    let tasks = []
+    let html = ''
+    var tasks_ref = database.ref('tasks/')
+    await tasks_ref.on('value', function (snapshot) {
+        if (snapshot.exists()) {
+            var data = snapshot.val()
+            tasks = Object.entries(data).map((e) => e[1])
+            let counter = 1;
+            userTasksList.innerHTML = ''
+            tasks.forEach(task => {
+
+                let filterCondition = false
+
+                switch (group) {
+                    case 'created_by_you':
+                        filterCondition = (
+                            task.createdBy == userProfile && !task.finished
+                        )
+                        break;
+                    case 'created_for_you':
+                        filterCondition = (
+                            task.createdBy == userProfile && !task.finished
+                        )
+                        break;
+                    case 'finished':
+                        filterCondition = (
+                            (task.createdBy = userProfile ||
+                                task.team.includes(currentUser)) &&
+                            (task.createdBy = currentUser ||
+                                task.team.includes(userProfile)) &&
+                            task.finished
+                        )
+                        break;
+                    case 'search':
+                        let title = task.title.toLowerCase()
+                        filterCondition = (
+                            (task.createdBy = userProfile ||
+                                task.team.includes(currentUser)) &&
+                            (task.createdBy = currentUser ||
+                                task.team.includes(userProfile)) &&
+                            title.includes(filter.toLowerCase()) &&
+                            !task.finished
+                        )
+                        break;
+                    default:
+                        filterCondition = (
+                            (task.createdBy = userProfile ||
+                                task.team.includes(currentUser)) &&
+                            (task.createdBy = currentUser ||
+                                task.team.includes(userProfile)) &&
+                            !task.finished
+                        )
+                        break;
+                }
+
+                if (filterCondition) {
+                    html += '<tr>' +
+                        '<th scope="row">' + counter + '</th>' +
+                        '<td><a href="/task.html?id=' + task.id + '">' + task.title + '</a></td>' +
+                        '<td><a href="/user.html?id=' + task.createdBy + '">' + task.createdBy + '</a></td>' +
+                        '<td>' + task.createdAt + '</td>' +
+                        '</tr>'
+                    counter++
+                }
+            })
+
+            userTasksList.innerHTML = html
+        } else {
+            userTasksList.innerHTML = 'No tasks found'
         }
     })
 }
