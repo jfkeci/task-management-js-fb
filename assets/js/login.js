@@ -10,7 +10,10 @@ let loginBtn = document.getElementById('loginBtn')
 
 loginBtn.addEventListener('click', login);
 
+
 function login() {
+    setLoader(true);
+
     var email = inputEmail.value
     var password = inputPassword.value
 
@@ -42,6 +45,7 @@ function login() {
                     if (canlogin) {
                         localStorage.setItem('user', username)
                         window.location.href = '/projects.html'
+                        setLoader(false);
                     } else {
                         tryAgain('Incorrect data');
                     }
@@ -63,4 +67,5 @@ function tryAgain(message) {
     setMessage(message, 'danger')
     inputEmail.value = ''
     inputPassword.value = ''
+    setLoader(false);
 }

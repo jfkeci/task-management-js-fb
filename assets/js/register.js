@@ -12,6 +12,7 @@ let registerBtn = document.getElementById('registerBtn')
 registerBtn.addEventListener('click', register);
 
 function register() {
+    setLoader(true)
     var user_ref = database.ref('users/')
     user_ref.on('value', function (snapshot) {
         var dbUsers = snapshot.val()
@@ -51,13 +52,16 @@ function register() {
                 })
                 setMessage('Registered successfully!')
                 window.location.href = '/projects.html'
+                setLoader(false)
             }).catch((err) => {
                 console.log(err.message)
             })
+            setLoader(false)
         }
     })
 }
 
 function tryAgain(message) {
     alert(message);
+    setLoader(false)
 }

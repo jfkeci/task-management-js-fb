@@ -24,6 +24,29 @@ $(document).ready(function () {
 
 function setNavbar() {
     let el = document.getElementById('header');
+
+    let spinner = `<style>
+        .loader {
+        border: 6px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 6px solid #3498db;
+        width: 45px;
+        height: 45px;
+        -webkit-animation: spin 2s linear infinite; /* Safari */
+        animation: spin 2s linear infinite;
+        }
+
+        /* Safari */
+        @-webkit-keyframes spin {
+        0% { -webkit-transform: rotate(0deg); }
+        100% { -webkit-transform: rotate(360deg); }
+        }
+
+        @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+        }
+    </style>`;
     let html = '<nav class="navbar navbar-expand-lg navbar-dark bg-dark">' +
         '<a class="navbar-brand nav-route-link" href="/projects.html">Tasker</a>' +
         '<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#taskerNavbar" aria-controls="taskerNavbar" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span>' +
@@ -49,7 +72,7 @@ function setNavbar() {
         '<div>' +
         '<link rel="stylesheet" href="assets/css/main.css">' +
         '</div>' +
-        '</nav>';
+        '</nav>' + spinner;
     el.innerHTML = html;
 }
 
@@ -130,4 +153,13 @@ function getDateNow() {
     let currentDate = day + '.' + month + '.' + year + '.'
 
     return currentDate
+}
+
+function setLoader(show) {
+    let loaderContainer = document.getElementById('loaderContainer')
+    if (show) {
+        loaderContainer.innerHTML = '<div class="loader"></div>'
+    } else {
+        loaderContainer.innerHTML = ''
+    }
 }
