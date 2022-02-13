@@ -83,7 +83,7 @@ function saveProject(id) {
         createdAt: getDateNow(),
     })
 
-    setMessage('Successfully saved <a href="/project.html?id=' + id + '"> ' + title + ' </a> project')
+    setMessage('Successfully saved ' + title + ' project')
     getProjects()
 }
 
@@ -97,7 +97,7 @@ function deleteValidation(row) {
 
     deleteModalProjectId.value = id
     deleteModalProjectTitle.value = title
-    deleteProjectMessage.innerHTML = 'Are you sure you want to delete project <a href="/project.html?id=' + id + '">' + title + '</a>'
+    deleteProjectMessage.innerHTML = 'Are you sure you want to delete project ' + title
 }
 
 function deleteProject() {
@@ -180,8 +180,7 @@ function getProjects(group = false, filter = null) { // user | team | all
                             archiveButton;
                     }
 
-                    buttonGroup += '<button class="btn btn-primary btn-sm m-1" onclick="getProjectTasks(this)" data-project-id="' + project.id + '" data-project-title="' + project.title + '"><i class="bi bi-list-task"></i></button>' +
-                        '<a href="/project.html?id=' + project.id + '" class="btn btn-primary btn-sm m-1"><i class="bi bi-eye"></i></a>'
+                    buttonGroup += '<button class="btn btn-primary btn-sm m-1" onclick="getProjectTasks(this)" data-project-id="' + project.id + '" data-project-title="' + project.title + '"><i class="bi bi-list-task"></i></button>'
 
                     let teamList = '<ul style="height:10vh; overflow-y:auto;" >'
                     if (team.length > 0) {
@@ -199,7 +198,7 @@ function getProjects(group = false, filter = null) { // user | team | all
                         '<div class="card text-white bg-dark m-2" style="width: 18rem;">' +
                         '<div class="card-body">' +
                         '<div style="height:10vh; overflow-y:auto; overflow-x:hidden;" >' +
-                        '<a href="/project.html?id=' + project.id + '" class="mr-3">Project: <b>' + project.title + '</b></a>' +
+                        '<h5>' + project.title + '</h5>' +
                         '</div>' +
                         '<hr>' +
                         '<div>' +
@@ -368,7 +367,7 @@ function getProjectTasks(projectCard) {
                 }
             })
             if (counter == 1) {
-                projectTasksContainer.innerHTML = '<hr><h5>No tasks found for project: <a href="/project.html?id=' + projectId + '">' + projectTitle + '</a></h5><small>No tasks created by you or assigned by you on this project</small><hr><br>'
+                projectTasksContainer.innerHTML = '<hr><h5>No tasks found for project: ' + projectTitle + '</h5><small>No tasks created by you or assigned by you on this project</small><hr><br>'
             } else {
                 projectTasksContainer.innerHTML = '<table class="table table-dark">' +
                     '<thead>' +
@@ -388,7 +387,7 @@ function getProjectTasks(projectCard) {
                 projectTasks.innerHTML = html
             }
         } else {
-            projectTasksContainer.innerHTML = '<br><hr><h5>No tasks found for project: <a href="/project.html?id=' + projectId + '">' + projectTitle + '</a></h5><small>No tasks created by you or assigned by you on this project</small><hr><br>'
+            projectTasksContainer.innerHTML = '<br><hr><h5>No tasks found for project: ' + projectTitle + '</h5><small>No tasks created by you or assigned by you on this project</small><hr><br>'
         }
     })
 }

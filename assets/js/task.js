@@ -66,7 +66,7 @@ function getTaskAndComments(taskId) {
                 </div>
 
                 <style>
-                .comments {
+                .comments-container {
                     height: 70vh;
                     overflow-y: auto;
                     overflow-x: hidden;
@@ -103,13 +103,15 @@ function getTaskAndComments(taskId) {
                                 </tr>
                             </tbody>
                             </table>
-                            <button type="button" class="btn btn-primary btn-sm btn-block">da</button>
+                            <button type="button" class="btn btn-danger btn-sm" data-task-id="${task.id}" onclick="selectedTaskDeleteValidation(this)"><i class="bi bi-trash"></i></button>
+                            <button type="button" class="btn btn-primary btn-sm" data-task="${encodeURIComponent(JSON.stringify(task))}" onclick="selectedTaskUpdateValidation(this)"><i class="bi bi-pencil-square"></i></button>
+                            <button type="button" class="btn btn-success btn-sm" data-task="${encodeURIComponent(JSON.stringify(task))}" onclick="selectedTaskCheck(this)"><i class="bi bi-check"></i></button>
                         </div>
                     </div>
                 </div>
-                <div class="col-6" id="commentsTableContainer">`
+                <div class="col-6" id="commentsTableContainer comments-container">`
                 if (task.comments) {
-                    html += `<table class="table comments table-dark">
+                    html += `<table class="table table-dark">
                     <thead>
                         <tr>
                         <th scope="col">User</th>
@@ -311,3 +313,26 @@ function addCustomComment(string, user, task = false) {
 }
 
 
+
+function selectedTaskDeleteValidation(button) {
+    let taskId = $(button).data('task-id')
+    console.log(taskId)
+
+}
+
+
+function selectedTaskUpdateValidation(button) {
+    let task = $(button).data('task')
+
+}
+function selectedTaskCheck(button) {
+    let task = $(button).data('task')
+
+}
+
+function selectedTaskDelete() {
+
+}
+function selectedTaskUpdate() {
+
+}

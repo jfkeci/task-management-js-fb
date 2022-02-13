@@ -3,7 +3,7 @@ let descriptionEl = document.getElementById('projectDescription')
 let teamEl = document.getElementById('projectTeam')
 
 let createTaskBtn = document.getElementById('createTaskBtn')
-let userSelectInput = document.getElementById('userSelectList')
+let userSelectList = document.getElementById('userSelectList')
 let taskInput = document.getElementById('inputTask')
 let dateInput = document.getElementById('inputTaskDate');
 
@@ -116,7 +116,7 @@ function getTasks(projectId) {
                 if (task.project == projectId) {
                     html += '<tr>' +
                         '<th scope="row">' + counter + '</th>' +
-                        '<td>' + task.title + '</td>' +
+                        '<td><a href="#taskAndCommentsContainer" class="nav-route-link" onclick="getTaskAndComments(\'' + task.id + '\')">' + task.title + '</a></td>' +
                         '<td>' + task.createdAt + '</td>' +
                         '<td>' + task.createdFor + '</td>' +
                         '<td>' + task.createdBy + '</td>' +
