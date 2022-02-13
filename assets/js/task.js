@@ -68,6 +68,39 @@ function getTaskAndComments(taskId) {
                 </div>
                 </div>
 
+                <div class="modal fade" id="modalUpdateSekectedTask" tabindex="-1" role="dialog"
+                aria-labelledby="modalUpdateSekectedTaskLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalUpdateSekectedTaskLabel">Update task</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="inputUpdateTitle">Title</label>
+                                    <input type="text" id="inputUpdateTitle" class="form-control"
+                                        placeholder="Task title">
+                                    <label for="inputUpdateDescription">Description</label>
+                                    <textarea class="form-control" id="inputUpdateDescription"
+                                        placeholder="What are you going to do?" rows="3"></textarea>
+                                </div>
+                                <input type="hidden" id="taskIdForUpdate">
+
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" id="createTaskBtn" class="btn btn-primary" data-dismiss="modal"
+                                onclick="updateTask()">Update</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
                 <style>
                 .comments-container {
                     height: 70vh;
@@ -307,22 +340,32 @@ function updateComment() {
 }
 
 
-function addCustomComment(string, user, task = false) {
-    if (!task) {
-        task = JSON.parse(decodeURIComponent(hiddenTaskInput.value))
+function addCustomComment(string, user, taskId) {
+    let task = null
+    var tasks_ref = database.ref('tasks/' + taskId)
+    tasks_ref.on('value', function (snapshot) {
+        if (snapshot.exists()) {
+            task = snapshot.val()
+        }
+    })
+
+    if (task) {
+        if (!task.comments) {
+            task.comments = []
+        }
+
+        newComment = {
+            id: makeId(),
+            createdBy: user,
+            createdAt: getDateNow(),
+            text: string,
+            note: true
+        }
+
+        task.comments.push(newComment)
+
+        database.ref('tasks/' + task.id).update(task)
     }
-
-    newComment = {
-        id: makeId(),
-        createdBy: user,
-        createdAt: getDateNow(),
-        text: string,
-        note: true
-    }
-
-    task.comments.push(newComment)
-
-    database.ref('tasks/' + task.id).update(task)
 }
 
 
@@ -346,7 +389,8 @@ function selectedTaskDeleteValidation(button) {
 
 
 function selectedTaskUpdateValidation(button) {
-    let task = $(button).data('task')
+    let task = JSON.parse(decodeURIComponent($(button).data('task')))
+    console.log(task)
 
 }
 function selectedTaskCheck() {

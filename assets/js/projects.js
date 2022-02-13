@@ -176,7 +176,7 @@ function getProjects(group = false, filter = null) { // user | team | all
 
                     if (project.createdBy == currentUser) {
                         buttonGroup += '<button class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#modalDeleteProject" onclick="deleteValidation(this)" data-project-id="' + project.id + '" data-project-title="' + project.title + '" ><i class="bi bi-trash"></i></button>' +
-                            '<button class="btn btn-primary btn-sm m-1" onclick="editProject(this)" data-project="' + project.id + '" data-toggle="modal" data-target="#modalUpdateProject"><i class="bi bi-pencil-square"></i></button>' +
+                            '<button class="btn btn-primary btn-sm m-1" onclick="editProject(this)" data-project-id="' + project.id + '" data-project="' + encodeURIComponent(JSON.stringify(project)) + '" data-toggle="modal" data-target="#modalUpdateProject"><i class="bi bi-pencil-square"></i></button>' +
                             archiveButton;
                     }
 
@@ -237,7 +237,9 @@ function getProjects(group = false, filter = null) { // user | team | all
 }
 
 function editProject(card) {
-    let projectId = $(card).data("project")
+    let projectId = $(card).data("project-id")
+
+    let data = JSON.parse(decodeURIComponent($(card).data("project")))
 
     let inputUpdateTitle = document.getElementById('inputUpdateTitle')
     let inputUpdateDescription = document.getElementById('inputUpdateDescription')
@@ -245,41 +247,11 @@ function editProject(card) {
     let inputId = document.getElementById('projectIdForUpdate')
     inputId.value = projectId;
 
-    var project_ref = database.ref('projects/' + projectId)
-    project_ref.on('value', function (snapshot) {
-        if (snapshot.exists()) {
-            var data = snapshot.val()
-            inputUpdateTitle.value = data.title
-            inputUpdateDescription.value = data.description
+    let projectToUpdate = document.getElementById('projectToUpdate')
+    projectToUpdate.value = $(card).data("project")
 
-            let team = data.team
-
-            database.ref('users/').on('value', function (userSnapshot) {
-                if (userSnapshot.exists()) {
-                    let userData = userSnapshot.val()
-                    users = Object.entries(userData).map((e) => e[1])
-                    users.forEach(user => {
-                        if (!team.includes(user.username)) {
-                            userSelectHtml += '<option value="' + user.username + '">' + user.username + '</option>'
-                        }
-                    });
-                }
-            })
-
-            let counter = 1;
-
-            team.forEach(member => {
-                updateTeamListHtml += '<li class="list-group-item">' + counter + '. ' + member + ' <button type="button" class="btn btn-danger ml-1 btn-sm float-right" ><i class="bi-person-x-fill"></i></button></li>'
-
-                counter++
-            });
-
-            let updateProjectTeamList = document.getElementById('updateUsersList')
-            updateProjectTeamList.innerHTML = updateTeamListHtml
-            let editUserSelect = document.getElementById('editUserSelect')
-            editUserSelect.innerHTML = userSelectHtml
-        }
-    })
+    inputUpdateTitle.value = data.title
+    inputUpdateDescription.value = data.description
 }
 
 
@@ -294,22 +266,21 @@ function updateProject() {
     let inputUpdateTitle = document.getElementById('inputUpdateTitle')
     let inputUpdateDescription = document.getElementById('inputUpdateDescription')
     let inputId = document.getElementById('projectIdForUpdate')
+    let projectToUpdate = document.getElementById('projectToUpdate')
 
     let projectId = inputId.value
     let title = inputUpdateTitle.value
     let description = inputUpdateDescription.value
 
-    let project_ref = database.ref('projects/' + projectId)
-    project_ref.on('value', function (snapshot) {
-        if (snapshot.exists()) {
-            let project = snapshot.val()
-            project.title = title
-            project.description = description
+    let project = JSON.parse(decodeURIComponent(projectToUpdate.value))
 
-            database.ref('projects/' + project.id).set(project)
-            getProjects()
-        }
-    })
+    project.title = title
+    project.description = description
+
+    database.ref('projects/' + project.id).set(project)
+    getProjects()
+
+    setMessage('Successfully updated')
 }
 
 function archiveProject(card) {
@@ -450,22 +421,3 @@ function removeUserFromProjectlist(button) {
     renderUserList();
 }
 
-
-function renderUpdateUserList() {
-    let html = '';
-    if (userTeamArray.length == 0) {
-        usersList.innerHTML = 'No users found'
-    } else {
-        let counter = 1;
-        userTeamArray.forEach(user => {
-            html += '<li class="list-group-item">' + counter + '. ' + user + ' <button type="button" class="btn btn-danger ml-1 btn-sm float-right" data-user="' + user + '" onclick="removeUserFromProjectlist(this)"><i class="bi-person-x-fill"></i></button></li>'
-            counter++
-        });
-        usersList.innerHTML = html
-    }
-}
-
-function removeUserFromUpdateProjectlist(button) {
-    let username = $(button).data("user")
-    updateTeamArray = updateTeamArray.filter(value => value != username)
-}

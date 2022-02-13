@@ -97,98 +97,21 @@ function uncheckTask(button) {
     let task = JSON.parse(decodeURIComponent($(button).data("task")))
     task.finished = false
     database.ref('tasks/' + task.id).update(task)
-
-}
-
-/* function _saveTask(id) {
-    let task = inputTask.value
-    let date = new Date(Date.now()).toString()
-    let createdAt = date.substr(0, 15)
-    database.ref('tasks/' + id).set({
-        id: id,
-        task: task,
-        createdBy: localStorage.getItem('user'),
-        createdAt: createdAt,
-    })
-
-    alert('Saved')
-    getTasks()
-}
- */
-
-function getComments(taskId) {
-
-}
-
-function getCheckedTasks() {
-    let checkedTasksTableContainer = document.getElementById('checkedTasksTableContainer')
-
-    checkedTasksTableContainer.innerHTML = '<h5>Finished tasks</h5><table class="table table-dark">' +
-        '<thead>' +
-        '<tr>' +
-        '<th scope="col">#</th>' +
-        '<th scope="col">Task</th>' +
-        '<th scope="col">For</th>' +
-        '<th scope="col">By</th>' +
-        '<th scope="col">Due</th>' +
-        '<th scope="col">Created at</th>' +
-        '<th scope="col"></th>' +
-        '</tr>' +
-        '</thead>' +
-        '<tbody id="checkedTasksTable">' +
-        '</tbody>' +
-        '</table>';
-    let tasks_ref = database.ref('tasks/')
-    tasks_ref.on('value', function (snapshot) {
-        if (snapshot.exists()) {
-            let data = snapshot.val()
-            let tasks = Object.entries(data).map((e) => e[1])
-            let counter = 1
-            let html = ''
-
-
-            tasks.forEach(task => {
-                if (task.finished && (task.createdBy == currentUser || task.createdFor == currentUser)) {
-                    html += '<tr>' +
-                        '<th scope="row">' + counter + '</th>' +
-                        '<td>' + task.title + '</td>' +
-                        '<td>' + task.createdFor + '</td>' +
-                        '<td>' + task.createdBy + '</td>' +
-                        '<td>' + task.due + '</td>' +
-                        '<td>' + task.createdAt + '</td>' +
-                        '</tr>'
-                    counter++
-                }
-            });
-            let checkedTasksTable = document.getElementById('checkedTasksTable')
-
-            if (counter == 1) {
-                checkedTasksTableContainer.innerHTML = '<hr><h5>No checked tasks</h5><hr>'
-            } else {
-                checkedTasksTable.innerHTML = html
-            }
-        }
-    })
 }
 
 function editTask(card) {
-    let taskId = $(card).data("task")
-
+    let taskToUpdate = document.getElementById('taskToUpdate')
+    taskToUpdate.value = $(card).data("task")
+    let task = JSON.parse(decodeURIComponent($(card).data("task")))
+    let taskId = task.id
     let inputUpdateTitle = document.getElementById('inputUpdateTitle')
     let inputUpdateDescription = document.getElementById('inputUpdateDescription')
 
     let inputId = document.getElementById('taskIdForUpdate')
     inputId.value = taskId;
 
-    var task_ref = database.ref('tasks/' + taskId)
-    task_ref.on('value', function (snapshot) {
-        if (snapshot.exists()) {
-            var data = snapshot.val()
-            inputUpdateTitle.value = data.title
-            inputUpdateDescription.value = data.description
-
-        }
-    })
+    inputUpdateTitle.value = task.title
+    inputUpdateDescription.value = task.description
 }
 
 
@@ -197,21 +120,23 @@ function updateTask() {
     let inputUpdateDescription = document.getElementById('inputUpdateDescription')
     let inputId = document.getElementById('taskIdForUpdate')
 
+    let taskToUpdate = document.getElementById('taskToUpdate')
+    let task = JSON.parse(decodeURIComponent(taskToUpdate.value))
+
     let taskId = inputId.value
     let title = inputUpdateTitle.value
     let description = inputUpdateDescription.value
 
-    let task_ref = database.ref('tasks/' + taskId)
-    task_ref.on('value', function (snapshot) {
-        if (snapshot.exists()) {
-            let task = snapshot.val()
-            task.title = title
-            task.description = description
+    task.title = title
+    task.description = description
 
-            database.ref('tasks/' + task.id).set(task)
-            getTasks()
-        }
-    })
+    database.ref('tasks/' + task.id).set(task)
+    getTasks()
+    addCustomComment(
+        currentUser + ' updated task: ' + task.title,
+        currentUser,
+        task.id
+    )
 }
 
 
@@ -241,6 +166,11 @@ function deleteTask() {
     database.ref('tasks/' + taskId).remove()
     setMessage('Task "' + taskTitle + '" removed successfully')
     getTasks();
+    addCustomComment(
+        currentUser + ' successfully deleted task: ' + taskTitle,
+        currentUser,
+        taskId
+    )
 }
 
 
@@ -345,7 +275,7 @@ async function getTasks(group = null, filter = '') { // user | team | all | sear
 
                     if (task.createdBy == currentUser) {
                         buttonGroup += '<button class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#modalDeleteTask" onclick="deleteValidation(this)" data-task-id="' + task.id + '" data-task-title="' + task.title + '" ><i class="bi bi-trash"></i></button>' +
-                            '<button class="btn btn-primary btn-sm m-1"><i class="bi bi-pencil-square" onclick="editTask(this)" data-task="' + task.id + '" data-toggle="modal" data-target="#modalUpdateTask"></i></button>';
+                            '<button class="btn btn-primary btn-sm m-1"><i class="bi bi-pencil-square" onclick="editTask(this)" data-task="' + encodeURIComponent(JSON.stringify(task)) + '" data-toggle="modal" data-target="#modalUpdateTask"></i></button>';
                     }
 
                     if (task.finished) {
