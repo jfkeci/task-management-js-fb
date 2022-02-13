@@ -3,9 +3,6 @@ let tasksTableContainer = document.getElementById('tasksTableContainer') || fals
 let tasksSortOptions = document.getElementById('tasksSortOptions') || false
 
 
-let currentUser = localStorage.getItem('user') || false
-
-
 // Tables
 let tasksTable = false;
 
@@ -32,9 +29,7 @@ $(document).ready(function () {
             getTasks();
         }
         getProjects();
-        getCheckedTasks();
     }
-
 
 
     if (addNewTask) {
@@ -100,7 +95,6 @@ function checkTask(button) {
             database.ref('tasks/' + task.id).set(task)
             setMessage('Checked task ' + task.title)
             getTasks()
-            getCheckedTasks();
         }
     })
 }
@@ -178,8 +172,6 @@ function getCheckedTasks() {
 
 function editTask(card) {
     let taskId = $(card).data("task")
-
-    console.log('id', taskId)
 
     let inputUpdateTitle = document.getElementById('inputUpdateTitle')
     let inputUpdateDescription = document.getElementById('inputUpdateDescription')
@@ -318,6 +310,8 @@ async function getTasks(group = null, filter = '') { // user | team | all | sear
     let tasks_ref = database.ref('tasks/')
     await tasks_ref.on('value', function (snapshot) {
         if (snapshot.exists()) {
+            html = ''
+
             let counter = 1
 
             let taskCount = 0
@@ -338,6 +332,8 @@ async function getTasks(group = null, filter = '') { // user | team | all | sear
                     filterCondition = title.includes(filter) && !task.finished && (task.createdBy == currentUser || task.createdFor == currentUser)
                 } else if (group == 'project' && filter) {
                     filterCondition = task.project == filter && !task.finished
+                } else if (group == 'checked' && filter) {
+                    filterCondition = (task.createdBy == currentUser || task.createdFor == currentUser) && task.finished
                 } else {
                     filterCondition = (task.createdBy == currentUser || task.createdFor == currentUser) && !task.finished
                 }
@@ -354,7 +350,7 @@ async function getTasks(group = null, filter = '') { // user | team | all | sear
 
                     html += '<tr>' +
                         '<th scope="row">' + counter + '</th>' +
-                        '<td>' + task.title + '</td>' +
+                        '<td><a href="#taskAndCommentsContainer" class="nav-route-link" onclick="getTaskAndComments(\'' + task.id + '\')">' + task.title + '</a></td>' +
                         '<td>' + task.createdFor + '</td>' +
                         '<td>' + task.createdBy + '</td>' +
                         '<td>' + task.due + '</td>' +

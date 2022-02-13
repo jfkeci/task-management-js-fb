@@ -3,5 +3,7 @@ a{
 }
 
 .nav-route-link:hover{
-    color: gray !important;
+    color: black !important;
+    font-weight: 600 !important;
+    cursor: pointer;
 }

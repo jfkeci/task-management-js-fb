@@ -120,6 +120,7 @@ function logout() {
 }
 
 function setMessage(message, type = false) {
+    console.log(message)
     let alertHtml = ''
 
     let alertContainer = document.getElementById('alertContainer') || false
@@ -127,13 +128,9 @@ function setMessage(message, type = false) {
     if (alertContainer) {
 
         if (type) {
-            alertHtml = '<div class="alert alert-' + type + '" role="alert">' +
-                message +
-                '</div>';
+            alertHtml = '<div class="alert alert-' + type + '" role="alert">' + message + '</div>';
         } else {
-            alertHtml = '<div class="alert alert-success" role="alert">' +
-                message +
-                '</div>';
+            alertHtml = '<div class="alert alert-success" role="alert">' + message + '</div>';
         }
 
         alertContainer.innerHTML = alertHtml
