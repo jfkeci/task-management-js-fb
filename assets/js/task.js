@@ -75,13 +75,12 @@ function getTaskAndComments(taskId) {
                 <input type="hidden" value="${encodeURIComponent(JSON.stringify(task))}" id="hiddenTaskInput"/><div class="row">
                 <div class="col-1"></div>
                 <div class="col-4">
-                    <div class="card" style="width: 18rem;">
+                    <div class="card text-white bg-dark" style="width: 18rem;">
                         <div class="card-body">
                             <h5 class="card-title">${task.title}</h5>
                             <hr>
                             <p>Description</p>
                             <p class="card-text">${task.description}</p>
-                            <hr>
                             <table class="table">
                             <tbody>
                                 <tr>
@@ -110,7 +109,7 @@ function getTaskAndComments(taskId) {
                 </div>
                 <div class="col-6" id="commentsTableContainer">`
                 if (task.comments) {
-                    html += `<table class="table comments">
+                    html += `<table class="table comments table-dark">
                     <thead>
                         <tr>
                         <th scope="col">User</th>
