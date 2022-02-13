@@ -315,9 +315,20 @@ function addCustomComment(string, user, task = false) {
 
 
 function selectedTaskDeleteValidation(button) {
-    let taskId = $(button).data('task-id')
-    console.log(taskId)
+    let id = $(button).data("task-id")
+    let commentActionDataInput = document.getElementById("commentActionDataInput")
+    let commentActionsContainer = document.getElementById("commentActionsContainer")
+    let commentActionValidationMessage = document.getElementById("commentActionValidationMessage")
 
+    commentActionsContainer.innerHTML = `
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="selectedTaskDelete()">Delete</button>`
+
+    commentActionValidationMessage.innerHTML = 'Are you sure you want to delete this task?'
+
+    commentActionDataInput.value = id
+
+    $('#commentActionValidationModal').modal('show');
 }
 
 
@@ -331,8 +342,14 @@ function selectedTaskCheck(button) {
 }
 
 function selectedTaskDelete() {
+    database.ref('tasks/' + singleSelectedTask.id).remove()
 
+    setMessage('Successfully removed')
+
+    let taskAndCommentsContainer = document.getElementById('taskAndCommentsContainer')
+    taskAndCommentsContainer.innerHTML = ''
 }
+
 function selectedTaskUpdate() {
 
 }
