@@ -20,6 +20,7 @@ $(document).ready(function () {
     } else {
         tasksSortOptions.innerHTML = '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getTasks(\'created_for_you\')">Created for you</button>' +
             '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getTasks(\'created_by_you\')">Created by you</button>' +
+            '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getTasks(\'checked\')">Finished</button>' +
             '<button class="btn btn-primary btn-block btn-sm m-1"  onclick="getTasks()">All</button>'
 
 
@@ -84,19 +85,17 @@ function saveTask(id, task) {
 }
 
 function checkTask(button) {
-    let taskId = $(button).data("task")
+    let task = JSON.parse(decodeURIComponent($(button).data("task")))
+    task.finished = true
+    database.ref('tasks/' + task.id).update(task)
 
-    let tasks_ref = database.ref('tasks/' + taskId)
-    tasks_ref.on('value', function (snapshot) {
-        if (snapshot.exists()) {
-            let task = snapshot.val()
-            task.finished = true
+}
 
-            database.ref('tasks/' + task.id).set(task)
-            setMessage('Checked task ' + task.title)
-            getTasks()
-        }
-    })
+function uncheckTask(button) {
+    let task = JSON.parse(decodeURIComponent($(button).data("task")))
+    task.finished = false
+    database.ref('tasks/' + task.id).update(task)
+
 }
 
 /* function _saveTask(id) {
@@ -332,7 +331,7 @@ async function getTasks(group = null, filter = '') { // user | team | all | sear
                     filterCondition = title.includes(filter) && !task.finished && (task.createdBy == currentUser || task.createdFor == currentUser)
                 } else if (group == 'project' && filter) {
                     filterCondition = task.project == filter && !task.finished
-                } else if (group == 'checked' && filter) {
+                } else if (group == 'checked') {
                     filterCondition = (task.createdBy == currentUser || task.createdFor == currentUser) && task.finished
                 } else {
                     filterCondition = (task.createdBy == currentUser || task.createdFor == currentUser) && !task.finished
@@ -341,12 +340,19 @@ async function getTasks(group = null, filter = '') { // user | team | all | sear
                 if (filterCondition) {
                     taskCount++
                     let buttonGroup = ''
+
                     if (task.createdBy == currentUser) {
                         buttonGroup += '<button class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#modalDeleteTask" onclick="deleteValidation(this)" data-task-id="' + task.id + '" data-task-title="' + task.title + '" ><i class="bi bi-trash"></i></button>' +
                             '<button class="btn btn-primary btn-sm m-1"><i class="bi bi-pencil-square" onclick="editTask(this)" data-task="' + task.id + '" data-toggle="modal" data-target="#modalUpdateTask"></i></button>';
                     }
 
-                    buttonGroup += '<button class="btn btn-success btn-sm m-1"  data-task="' + task.id + '" onclick="checkTask(this)"><i class="bi bi-check"></i></button>'
+                    if (task.finished) {
+                        buttonGroup += '<button class="btn btn-danger btn-sm m-1"  data-task="' + encodeURIComponent(JSON.stringify(task)) + '" onclick="uncheckTask(this)"><i class="bi bi-check"></i></button>'
+                    } else {
+                        buttonGroup += '<button class="btn btn-success btn-sm m-1"   data-task="' + encodeURIComponent(JSON.stringify(task)) + '"onclick="checkTask(this)"><i class="bi bi-check"></i></button>'
+                    }
+
+
 
                     html += '<tr>' +
                         '<th scope="row">' + counter + '</th>' +
