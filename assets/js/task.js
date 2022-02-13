@@ -37,7 +37,6 @@ function getTaskAndComments(taskId) {
 
             if (showdata) {
 
-                console.log(task)
 
                 let projectTitle = ''
                 var projects_ref = database.ref('projects/' + task.project)
@@ -391,7 +390,6 @@ function selectedTaskDeleteValidation(button) {
 
 function selectedTaskUpdateValidation(button) {
     let task = JSON.parse(decodeURIComponent($(button).data('task')))
-    console.log(task)
 
 }
 function selectedTaskCheck() {
