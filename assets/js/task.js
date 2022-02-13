@@ -129,7 +129,7 @@ function getTaskAndComments(taskId) {
                         if (comment.createdBy == currentUser && !comment.note) {
                             buttongroup = `
                             <button type="button" class="btn btn-danger btn-sm" data-comment-id="${comment.id}" onclick="deleteCommentValidation(this)"><i class="bi bi-trash"></i></button>
-                            <button type="button" class="btn btn-primary btn-sm" data-comment-id="${comment.id}" onclick="editCommentValidation(this)"><i class="bi bi-pencil-square"></i></button>
+                            <button type="button" class="btn btn-primary btn-sm" data-comment="${encodeURIComponent(JSON.stringify(comment))}" onclick="editCommentValidation(this)"><i class="bi bi-pencil-square"></i></button>
                             `
                         }
                         if (comment.createdBy == currentUser) { }
@@ -149,7 +149,7 @@ function getTaskAndComments(taskId) {
                 }
 
                 html += `<hr>
-                        <input type="email" class="form-control mt-3 mb-3" id="commentInput" aria-describedby="emailHelp" placeholder="Add a comment">
+                        <input type="text" class="form-control mt-3 mb-3" id="commentInput" placeholder="Add a comment">
                         <button type="button" class="btn btn-primary btn-sm float-right" onclick="addComment()">Comment</button>
                     </div>
                     <div class="col-1"></div>
@@ -245,20 +245,52 @@ function deleteComment() {
 }
 
 function editCommentValidation(button) {
-    let id = $(button).data("comment-id")
-    let commentActionDataInput = document.getElementById("commentActionDataInput")
+    let comment = JSON.parse(decodeURIComponent($(button).data("comment")))
     let commentActionsContainer = document.getElementById("commentActionsContainer")
+    let commentActionDataInput = document.getElementById("commentActionDataInput")
     let commentActionValidationMessage = document.getElementById("commentActionValidationMessage")
+
+    commentActionDataInput.value = $(button).data("comment")
 
     commentActionsContainer.innerHTML = `
     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="editCommentValidation()">Delete</button>`
+    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="updateComment()">Save</button>`
 
-    commentActionValidationMessage.innerHTML = 'Are you sure you want to delete this comment?'
-
-    commentActionDataInput.value = id
+    commentActionValidationMessage.innerHTML = `
+    <p> Edit comment </p>
+    <hr>
+    <input type="text" class="form-control mt-3 mb-3" id="updateCommentTitleInput" id="updateComment()" placeholder="Edit comment" value="${comment.text}">
+    `
 
     $('#commentActionValidationModal').modal('show');
+}
+
+
+
+function updateComment() {
+    let commentActionDataInput = document.getElementById("commentActionDataInput")
+
+    let comment = JSON.parse(decodeURIComponent(commentActionDataInput.value))
+
+    let updateCommentTitleInput = document.getElementById("updateCommentTitleInput")
+
+    let id = comment.id
+
+    comment.text = updateCommentTitleInput.value
+
+    let comments = singleSelectedTask.comments;
+
+    for (var i = 0; i < comments.length; i++) {
+        if (comments[i]['id'] === id) {
+            comments[i] = comment
+        }
+    }
+
+    singleSelectedTask.comments = comments
+
+    database.ref('tasks/' + singleSelectedTask.id).update(singleSelectedTask)
+
+    setMessage('Successfully updated')
 }
 
 
@@ -280,23 +312,3 @@ function addCustomComment(string, task = false) {
 }
 
 
-function updateComment() {
-
-    let commentActionDataInput = document.getElementById("commentActionDataInput")
-    let id = commentActionDataInput.value
-
-    let comments = singleSelectedTask.comments;
-
-    for (var i = 0; i < comments.length; i++) {
-        if (comments[i]['id'] === id) {
-            comments.splice(i, 1);
-        }
-    }
-
-    singleSelectedTask.comments = comments
-
-    database.ref('tasks/' + singleSelectedTask.id).update(singleSelectedTask)
-
-    setMessage('Successfully removed')
-
-}
