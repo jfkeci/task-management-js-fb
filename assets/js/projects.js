@@ -103,12 +103,10 @@ function deleteValidation(row) {
 function deleteProject() {
     let projectId = document.getElementById('deleteModalProjectId').value
     let projectTitle = document.getElementById('deleteModalProjectTitle').value
+
     database.ref('projects/' + projectId).remove()
 
-
-
     setMessage('Project "' + projectTitle + '" removed successfully')
-    getProjects();
 }
 
 

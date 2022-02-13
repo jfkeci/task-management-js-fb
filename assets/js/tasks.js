@@ -158,6 +158,9 @@ function deleteValidation(row) {
     deleteModalTaskId.value = id
     deleteModalTaskTitle.value = title
     deleteTaskMessage.innerHTML = 'Are you sure you want to delete task: ' + title
+
+    deleteTask() // --this
+    /* $('#modalDeleteTask').modal('show');  */// --this
 }
 
 function deleteTask() {
@@ -274,7 +277,7 @@ async function getTasks(group = null, filter = '') { // user | team | all | sear
                     let buttonGroup = ''
 
                     if (task.createdBy == currentUser) {
-                        buttonGroup += '<button class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#modalDeleteTask" onclick="deleteValidation(this)" data-task-id="' + task.id + '" data-task-title="' + task.title + '" ><i class="bi bi-trash"></i></button>' +
+                        buttonGroup += '<button class="btn btn-danger btn-sm m-1" onclick="deleteValidation(this)" data-task-id="' + task.id + '" data-task-title="' + task.title + '" ><i class="bi bi-trash"></i></button>' +
                             '<button class="btn btn-primary btn-sm m-1"><i class="bi bi-pencil-square" onclick="editTask(this)" data-task="' + encodeURIComponent(JSON.stringify(task)) + '" data-toggle="modal" data-target="#modalUpdateTask"></i></button>';
                     }
 

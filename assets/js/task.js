@@ -145,7 +145,7 @@ function getTaskAndComments(taskId) {
                     <button type="button" class="btn btn-primary btn-sm m-1" data-task="${encodeURIComponent(JSON.stringify(task))}" onclick="selectedTaskUpdateValidation(this)"><i class="bi bi-pencil-square"></i></button>`
                 }
 
-                if (task.finished) {
+                if (!task.finished) {
                     html += `<button type="button" class="btn btn-danger btn-sm m-1" onclick="selectedTaskCheck()"><i class="bi bi-check"></i></button>`
                 } else {
                     html += `<button type="button" class="btn btn-success btn-sm m-1" onclick="selectedTaskCheck()"><i class="bi bi-check"></i></button>`
@@ -267,7 +267,8 @@ function deleteCommentValidation(button) {
 
     commentActionDataInput.value = id
 
-    $('#commentActionValidationModal').modal('show');
+    deleteComment(); // --this
+    /* $('#commentActionValidationModal').modal('show'); --this */
 }
 
 
