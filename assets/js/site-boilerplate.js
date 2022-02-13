@@ -120,7 +120,6 @@ function logout() {
 }
 
 function setMessage(message, type = false) {
-    console.log(message)
     let alertHtml = ''
 
     let alertContainer = document.getElementById('alertContainer') || false

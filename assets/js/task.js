@@ -76,7 +76,6 @@ function getTaskAndComments(taskId) {
                 <div class="col-1"></div>
                 <div class="col-4">
                     <div class="card" style="width: 18rem;">
-                        <img class="card-img-top" src="https://picsum.photos/300/200" alt="Card image cap">
                         <div class="card-body">
                             <h5 class="card-title">${task.title}</h5>
                             <hr>

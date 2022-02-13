@@ -253,7 +253,7 @@ function editProject(card) {
             inputUpdateTitle.value = data.title
             inputUpdateDescription.value = data.description
 
-
+            let team = data.team
 
             database.ref('users/').on('value', function (userSnapshot) {
                 if (userSnapshot.exists()) {
@@ -268,6 +268,7 @@ function editProject(card) {
             })
 
             let counter = 1;
+
             team.forEach(member => {
                 updateTeamListHtml += '<li class="list-group-item">' + counter + '. ' + member + ' <button type="button" class="btn btn-danger ml-1 btn-sm float-right" ><i class="bi-person-x-fill"></i></button></li>'
 
@@ -355,24 +356,13 @@ function getProjectTasks(projectCard) {
             let counter = 1;
             tasks.forEach(task => {
                 if (task.project == projectId /* && (tasks.createdFor == currentUser || tasks.createdBy == currentUser) */) {
-                    let buttonGroup = '<button type="button" class="btn btn-primary btn-sm m-1" data-task-id="' + task.id + '"><i class="bi bi-pencil-square"></i></button>' +
-                        '<button type="button" class="btn btn-danger btn-sm m-1" data-task-id="' + task.id + '"><i class="bi bi-trash"></i></button>'
-
-                    if (task.createdFor == currentUser) {
-                        buttonGroup += '<button type="button" class="btn btn-success btn-sm m-1" data-task-id="' + task.id + '"><i class="bi bi-check"></i></button>'
-                    }
-
                     html += '<tr>' +
                         '<th scope="row">' + counter + '</th>' +
-                        '<td>' + task.title + '</td>' +
-                        '<td>' + task.assignedTo + '</td>' +
+                        '<td><a href="#taskAndCommentsContainer" class="nav-route-link" onclick="getTaskAndComments(\'' + task.id + '\')">' + task.title + '</a></td>' +
+                        '<td>' + task.createdFor + '</td>' +
                         '<td>' + task.createdBy + '</td>' +
                         '<td>' + task.due + '</td>' +
                         '<td>' + task.createdAt + '</td>' +
-                        '<td>' +
-                        buttonGroup +
-                        '</td>' +
-                        '<!--<td><button type="button" class="btn btn-danger" onclick="deleteTask(this)" data-task-id="' + task.id + '">Delete</button></td > -->' +
                         '</tr>'
                     counter++
                 }
@@ -389,7 +379,6 @@ function getProjectTasks(projectCard) {
                     '<th scope="col">By</th>' +
                     '<th scope="col">Due</th>' +
                     '<th scope="col">Created at</th>' +
-                    '<th scope="col"></th>' +
                     '</tr>' +
                     '</thead>' +
                     '<tbody id="projectTasks">' +

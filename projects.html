@@ -38,7 +38,6 @@
         .tasks-table {
             height: 50vh;
             overflow-y: auto;
-            overflow-x: hidden;
         }
     </style>
 
@@ -114,6 +113,12 @@
         </div>
     </div>
 
+    <div>
+        <div id="taskAndCommentsContainer">
+
+        </div>
+    </div>
+
     <div id="modals">
         <div class="modal fade" id="modalAddProject" tabindex="-1" role="dialog" aria-labelledby="modalAddProjectLabel"
             aria-hidden="true">
@@ -180,7 +185,7 @@
                                     placeholder="What are you going to do?" rows="3"></textarea>
                             </div>
                             <input type="hidden" id="projectIdForUpdate">
-                            <!-- <hr>
+                            <hr>
                             <h4>Add users to the project</h4>
                             <div class="input-group">
                                 <select class="custom-select" id="editUserSelect">
@@ -192,7 +197,7 @@
                             </div>
                             <ul class="list-group mt-3" id="updateUsersList">
                                 No users selected
-                            </ul> -->
+                            </ul>
                         </form>
                     </div>
                     <div class="modal-footer">
@@ -232,6 +237,8 @@
     </div>
 
 
+
+
     <br>
     <br>
     <br>
@@ -247,6 +254,7 @@
     <script src="assets/js/site-boilerplate.js"></script>
     <script src="assets/js/firebase-config.js"></script>
     <script src="assets/js/projects.js"></script>
+    <script src="assets/js/task.js"></script>
 
 </body>
 
