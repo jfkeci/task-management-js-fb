@@ -36,6 +36,9 @@ function getTaskAndComments(taskId) {
             }
 
             if (showdata) {
+
+                console.log(task)
+
                 let projectTitle = ''
                 var projects_ref = database.ref('projects/' + task.project)
                 projects_ref.on('value', function (snapshot) {
@@ -103,10 +106,17 @@ function getTaskAndComments(taskId) {
                                 </tr>
                             </tbody>
                             </table>
-                            <button type="button" class="btn btn-danger btn-sm" data-task-id="${task.id}" onclick="selectedTaskDeleteValidation(this)"><i class="bi bi-trash"></i></button>
-                            <button type="button" class="btn btn-primary btn-sm" data-task="${encodeURIComponent(JSON.stringify(task))}" onclick="selectedTaskUpdateValidation(this)"><i class="bi bi-pencil-square"></i></button>
-                            <button type="button" class="btn btn-success btn-sm" data-task="${encodeURIComponent(JSON.stringify(task))}" onclick="selectedTaskCheck(this)"><i class="bi bi-check"></i></button>
-                        </div>
+                            <button type="button" class="btn btn-danger btn-sm m-1" data-task-id="${task.id}" onclick="selectedTaskDeleteValidation(this)"><i class="bi bi-trash"></i></button>
+                            <button type="button" class="btn btn-primary btn-sm m-1" data-task="${encodeURIComponent(JSON.stringify(task))}" onclick="selectedTaskUpdateValidation(this)"><i class="bi bi-pencil-square"></i></button>`
+
+                if (task.finished) {
+                    html += `<button type="button" class="btn btn-danger btn-sm m-1" onclick="selectedTaskCheck()"><i class="bi bi-check"></i></button>`
+                } else {
+                    html += `<button type="button" class="btn btn-success btn-sm m-1" onclick="selectedTaskCheck()"><i class="bi bi-check"></i></button>`
+                }
+
+
+                html += `</div>
                     </div>
                 </div>
                 <div class="col-6" id="commentsTableContainer comments-container">`
@@ -336,9 +346,10 @@ function selectedTaskUpdateValidation(button) {
     let task = $(button).data('task')
 
 }
-function selectedTaskCheck(button) {
-    let task = $(button).data('task')
+function selectedTaskCheck() {
+    singleSelectedTask.finished = !singleSelectedTask.finished
 
+    database.ref('tasks/' + singleSelectedTask.id).update(singleSelectedTask)
 }
 
 function selectedTaskDelete() {
@@ -348,6 +359,7 @@ function selectedTaskDelete() {
 
     let taskAndCommentsContainer = document.getElementById('taskAndCommentsContainer')
     taskAndCommentsContainer.innerHTML = ''
+
 }
 
 function selectedTaskUpdate() {
