@@ -183,19 +183,12 @@ function getProjects(group = false, filter = null) { // user | team | all
                     buttonGroup += '<button class="btn btn-primary btn-sm m-1" onclick="getProjectTasks(this)" data-project-id="' + project.id + '" data-project-title="' + project.title + '"><i class="bi bi-list-task"></i></button>' +
                         '<a href="/project.html?id=' + project.id + '" class="btn btn-primary btn-sm m-1"><i class="bi bi-eye"></i></a>'
 
-                    let teamList = ''
+                    let teamList = '<ul style="height:10vh; overflow-y:auto;" >'
                     if (team.length > 0) {
-                        let teamCount = 1
                         team.forEach(member => {
-                            if (teamCount <= 5) {
-                                teamList += '<p>' + member + '</p>'
-                            }
-
-                            if (teamCount == 6) {
-                                teamList += '<a href="/project.html?id=' + project.id + '" class="btn btn-info btn-sm m-1"><i class="bi bi-eye"></i></a>'
-                            }
-                            teamCount++
+                            teamList += '<li>' + member + '</li>'
                         });
+                        teamList += '</ul>'
                     }
                     if (counter == 3) {
                         html += '</div><div class="row">'
@@ -205,9 +198,9 @@ function getProjects(group = false, filter = null) { // user | team | all
                     html += '<div class="col-sm">' +
                         '<div class="card text-white bg-dark m-2" style="width: 18rem;">' +
                         '<div class="card-body">' +
+                        '<div style="height:10vh; overflow-y:auto; overflow-x:hidden;" >' +
                         '<a href="/project.html?id=' + project.id + '" class="mr-3">Project: <b>' + project.title + '</b></a>' +
-                        '<hr>' +
-                        '<p class="card-text">' + project.description + '</p>' +
+                        '</div>' +
                         '<hr>' +
                         '<div>' +
                         teamList +
