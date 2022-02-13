@@ -3,14 +3,13 @@
 const taskJsParams = new URLSearchParams(window.location.search);
 const selectedTaskId = taskJsParams.get('taskId');
 
-const currentUser = localStorage.getItem('user') || false
+const currentlyLoggedUser = localStorage.getItem('user') || false
 
 if (selectedTaskId) {
     getTaskAndComments(selectedTaskId);
 }
 
 let singleSelectedTask = {}
-
 
 function getTaskAndComments(taskId) {
     let taskAndCommentsContainer = document.getElementById('taskAndCommentsContainer')
@@ -26,7 +25,7 @@ function getTaskAndComments(taskId) {
 
             let showdata = false
 
-            if (task.createdBy != currentUser || task.createdFor != currentUser) {
+            if (task.createdBy != currentlyLoggedUser || task.createdFor != currentlyLoggedUser) {
                 if (selectedTaskId) {
                     window.location.href = projects.html
                 } else {
@@ -126,13 +125,13 @@ function getTaskAndComments(taskId) {
 
                     comments.forEach(comment => {
                         let buttongroup = ''
-                        if (comment.createdBy == currentUser && !comment.note) {
+                        if (comment.createdBy == currentlyLoggedUser && !comment.note) {
                             buttongroup = `
                             <button type="button" class="btn btn-danger btn-sm" data-comment-id="${comment.id}" onclick="deleteCommentValidation(this)"><i class="bi bi-trash"></i></button>
                             <button type="button" class="btn btn-primary btn-sm" data-comment="${encodeURIComponent(JSON.stringify(comment))}" onclick="editCommentValidation(this)"><i class="bi bi-pencil-square"></i></button>
                             `
                         }
-                        if (comment.createdBy == currentUser) { }
+                        if (comment.createdBy == currentlyLoggedUser) { }
                         html += `<tr>
                             <th scope="row">${comment.createdBy}  <br><small> ${comment.createdAt}</small></th>
                             <td>${comment.text}</td>
@@ -194,9 +193,10 @@ function addComment() {
 
         newComment = {
             id: makeId(),
-            createdBy: currentUser,
+            createdBy: currentlyLoggedUser,
             createdAt: getDateNow(),
-            text: newComment
+            text: newComment,
+            note: false
         }
 
         task.comments.push(newComment)
@@ -294,16 +294,17 @@ function updateComment() {
 }
 
 
-function addCustomComment(string, task = false) {
+function addCustomComment(string, user, task = false) {
     if (!task) {
         task = JSON.parse(decodeURIComponent(hiddenTaskInput.value))
     }
 
     newComment = {
         id: makeId(),
-        createdBy: currentUser,
+        createdBy: user,
         createdAt: getDateNow(),
-        text: string
+        text: string,
+        note: true
     }
 
     task.comments.push(newComment)

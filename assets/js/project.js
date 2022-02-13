@@ -43,7 +43,7 @@ function getProject(id) {
             if (team.length > 0) {
                 let teamCount = 1
                 team.forEach(member => {
-                    teamList += '<li>' + teamCount + '. <a href="/user.html?user=' + member + '" class="mr-3">' + member + '</a></li>'
+                    teamList += '<li>' + teamCount + '. ' + member + '</li>'
                     teamCount++
                     userSelectHtml += '<option value="' + member + '">' + member + '</option>'
                 });
@@ -118,8 +118,8 @@ function getTasks(projectId) {
                         '<th scope="row">' + counter + '</th>' +
                         '<td>' + task.title + '</td>' +
                         '<td>' + task.createdAt + '</td>' +
-                        '<td><a href="/user.html?id=' + task.createdFor + '">' + task.createdFor + '</a></td>' +
-                        '<td><a href="/user.html?id=' + task.createdBy + '">' + task.createdBy + '</a></td>' +
+                        '<td>' + task.createdFor + '</td>' +
+                        '<td>' + task.createdBy + '</td>' +
                         '<td>' + task.due + '</td>' +
                         '<!--<td><button type="button" class="btn btn-danger" onclick="deleteTask(this)" data-task-id="' + task.id + '">Delete</button></td > -->' +
                         '</tr>'

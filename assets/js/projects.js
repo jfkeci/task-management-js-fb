@@ -188,7 +188,7 @@ function getProjects(group = false, filter = null) { // user | team | all
                         let teamCount = 1
                         team.forEach(member => {
                             if (teamCount <= 5) {
-                                teamList += '<a href="/user.html?id=' + member + '" class="btn btn-info btn-sm m-1">' + member + '</a>'
+                                teamList += '<p>' + member + '</p>'
                             }
 
                             if (teamCount == 6) {

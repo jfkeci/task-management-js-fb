@@ -11,6 +11,8 @@ let createTaskBtn = null;
 
 let projectsArray = []
 
+let currentUser = localStorage.getItem('user')
+
 $(document).ready(function () {
     const urlParams = new URLSearchParams(window.location.search);
     const addNewTask = urlParams.get('addtask');
