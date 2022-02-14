@@ -342,6 +342,7 @@ function updateComment() {
 
 function addCustomComment(string, user, taskId) {
     let task = null
+
     var tasks_ref = database.ref('tasks/' + taskId)
     tasks_ref.on('value', function (snapshot) {
         if (snapshot.exists()) {
@@ -389,14 +390,46 @@ function selectedTaskDeleteValidation(button) {
 
 
 function selectedTaskUpdateValidation(button) {
-    let task = JSON.parse(decodeURIComponent($(button).data('task')))
+    let task = JSON.parse(decodeURIComponent($(button).data("task")))
+    let commentActionDataInput = document.getElementById("commentActionDataInput")
+    let commentActionsContainer = document.getElementById("commentActionsContainer")
+    let commentActionValidationMessage = document.getElementById("commentActionValidationMessage")
+
+    commentActionsContainer.innerHTML = `
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="selectedTaskUpdate()">Update</button>`
+
+    commentActionValidationMessage.innerHTML = `
+    <p>Updating task</p>
+    <input type="text" class="form-control mt-3 mb-3" id="updateSelectedTaskTitle" placeholder="Edit title" value="${task.title}">
+    <input type="text" class="form-control mt-3 mb-3" id="updateSelectedTaskDescription" placeholder="Edit description" value="${task.description}">
+    `
+
+    commentActionDataInput.value = $(button).data("task")
+
+    $('#commentActionValidationModal').modal('show');
 
 }
+
+
 function selectedTaskCheck() {
+    let text = ''
+    if (singleSelectedTask.finished) {
+        text = 'unchecked'
+    } else {
+        text = 'checked'
+    }
     singleSelectedTask.finished = !singleSelectedTask.finished
 
     database.ref('tasks/' + singleSelectedTask.id).update(singleSelectedTask)
+
+    addCustomComment(
+        currentlyLoggedUser + ' ' + text + ' task ' + task.title,
+        currentlyLoggedUser,
+        task.id
+    )
 }
+
 
 function selectedTaskDelete() {
     database.ref('tasks/' + singleSelectedTask.id).remove()
@@ -409,5 +442,21 @@ function selectedTaskDelete() {
 }
 
 function selectedTaskUpdate() {
+    let commentActionDataInput = document.getElementById("commentActionDataInput")
+    let task = JSON.parse(decodeURIComponent(commentActionDataInput.value))
 
+    let title = document.getElementById("updateSelectedTaskTitle").value
+    let description = document.getElementById("updateSelectedTaskDescription").value
+
+
+    task.title = title
+    task.description = description
+
+    database.ref('tasks/' + task.id).update(task)
+    setMessage('Successfully updated')
+    addCustomComment(
+        currentlyLoggedUser + ' updated task ' + task.title,
+        currentlyLoggedUser,
+        task.id
+    )
 }

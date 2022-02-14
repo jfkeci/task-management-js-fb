@@ -6,9 +6,6 @@ let tasksSortOptions = document.getElementById('tasksSortOptions') || false
 // Tables
 let tasksTable = false;
 
-// Buttons
-let createTaskBtn = null;
-
 let projectsArray = []
 
 let currentUser = localStorage.getItem('user')
@@ -84,6 +81,11 @@ function saveTask(id, task) {
 
     setMessage('Task ' + task.title + ' successfully saved')
     getTasks()
+    addCustomComment(
+        currentUser + ' added new task ' + task.title,
+        currentUser,
+        task.id
+    )
 }
 
 function checkTask(button) {
@@ -91,12 +93,23 @@ function checkTask(button) {
     task.finished = true
     database.ref('tasks/' + task.id).update(task)
 
+    addCustomComment(
+        currentUser + ' checked ' + task.title,
+        currentUser,
+        task.id
+    )
+
 }
 
 function uncheckTask(button) {
     let task = JSON.parse(decodeURIComponent($(button).data("task")))
     task.finished = false
     database.ref('tasks/' + task.id).update(task)
+    addCustomComment(
+        currentUser + ' unchecked ' + task.title,
+        currentUser,
+        task.id
+    )
 }
 
 function editTask(card) {
